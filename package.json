@@ -1,6 +1,6 @@
 {
 	"name": "pm-carousel",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "pm-carousel is an accessible and small carousel plugin written in JavaScript with no dependencies",
 	"keywords": [
 		"a11y",
@@ -15,6 +15,9 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/lordfpx/pm-carousel.git"
+	},
+	"commit-and-tag-version": {
+		"releaseCount": 0
 	},
 	"scripts": {
 		"dev": "vite",
