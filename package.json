@@ -1,23 +1,37 @@
 {
 	"name": "pm-carousel",
 	"version": "0.1.1",
+	"description": "pm-carousel is an accessible and small carousel plugin written in JavaScript with no dependencies",
+	"keywords": [
+		"a11y",
+		"accessibility",
+		"javascript",
+		"vanilla",
+		"small",
+		"fast"
+	],
+	"author": "Thierry PHILIPPE <contact@thierryphilippe.fr>",
+	"license": "GPL-3.0-or-later",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/lordfpx/pm-carousel.git"
+	},
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build && vite preview",
 		"build:main": "vite build --base=/pm-carousel/ && vite build -c vite.config.build.js",
-		"preversion": "npm run build:main && git add .",
-		"postversion": "git push && git push --tags"
+		"prerelease": "npm run build:main && git add .",
+		"release": "commit-and-tag-version"
 	},
 	"devDependencies": {
+		"commit-and-tag-version": "^12.4.2",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-import": "^2.29.1",
 		"prismjs": "^1.29.0",
 		"sass": "^1.77.6",
+		"tachyons": "^4.12.0",
 		"vite": "^5.3.3"
-	},
-	"dependencies": {
-		"tachyons": "^4.12.0"
 	},
 	"files": [
 		"dist"
