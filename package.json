@@ -16,9 +16,6 @@
 		"type": "git",
 		"url": "https://github.com/lordfpx/pm-carousel.git"
 	},
-	"commit-and-tag-version": {
-		"releaseCount": 0
-	},
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build && vite preview",
