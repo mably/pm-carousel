@@ -1,15 +1,15 @@
-const n = "data-pm-carousel", x = `${n}-paging`, _ = `${n}-wrapper`, P = `${n}-overflow`, y = `${n}-item`, b = `${n}-prev`, w = `${n}-next`, g = `${n}-playstop`, A = "transform .5s ease-in-out", l = "is-active", $ = {
+const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-overflow`, f = `${r}-item`, m = `${r}-prev`, v = `${r}-next`, p = `${r}-playstop`, y = "transform .5s ease-in-out", c = "is-active", E = {
   playstop: function() {
     this.nodes.playstop && (this.nodes.playstop.hidden = !this.currentSettings.autoplay);
   },
   wrapper: function() {
     const t = this.currentSettings.noStartSpace ? 0 : this.currentSettings.spaceAround;
-    this.nodes.overflow.style.transform = `translateX(${this.activePage * -100 + t}%)`, this.currentSettings.noStartSpace ? this.nodes.overflow.style.paddingRight = this.currentSettings.spaceAround + "%" : (this.nodes.overflow.style.paddingRight = t + "%", this.nodes.overflow.style.paddingLeft = t + "%"), this.nodes.overflow.style.transition = A, this.nodes.overflow.style.display = "flex", this.nodes.wrapper.style.overflow = "hidden", this.el.classList.add(l);
+    this.nodes.overflow.style.transform = `translateX(${this.activePage * -100 + t}%)`, this.currentSettings.noStartSpace ? this.nodes.overflow.style.paddingRight = this.currentSettings.spaceAround + "%" : (this.nodes.overflow.style.paddingRight = t + "%", this.nodes.overflow.style.paddingLeft = t + "%"), this.nodes.overflow.style.transition = y, this.nodes.overflow.style.display = "flex", this.nodes.wrapper.style.overflow = "hidden", this.el.classList.add(c);
   },
   slides: function() {
     const t = [];
     for (this.nodes.items.forEach((e, s) => {
-      e.setAttribute("tabindex", "-1"), e.setAttribute(n + "-item", s), e.style.flex = `1 0 ${100 / this.currentSettings.group}%`, e.style.overflow = "hidden";
+      e.setAttribute("tabindex", "-1"), e.setAttribute(r + "-item", s), e.style.flex = `1 0 ${100 / this.currentSettings.group}%`, e.style.overflow = "hidden";
     }); this.nodes.items.length > 0; )
       t.push(this.nodes.items.splice(0, this.currentSettings.group));
     this.nodes.items = t, this.pagesLength = this.nodes.items.length;
@@ -18,48 +18,48 @@ const n = "data-pm-carousel", x = `${n}-paging`, _ = `${n}-wrapper`, P = `${n}-o
     if (!this.nodes.paging) return;
     let t, e;
     const s = document.createDocumentFragment();
-    this.nodes.paging.innerHTML = "", this.nodes.pages = [], this.nodes.items.forEach((i, r) => {
-      e = this.nodes.pagingTpl.innerHTML, t = document.createElement("div"), t.innerHTML = e.replace("{nbr}", ++r), this.nodes.pages.push(t.firstElementChild), s.appendChild(t.firstElementChild);
+    this.nodes.paging.innerHTML = "", this.nodes.pages = [], this.nodes.items.forEach((i, a) => {
+      e = this._templates.pagingTpl, t = document.createElement("div"), t.innerHTML = e.replace("{nbr}", ++a), this.nodes.pages.push(t.firstElementChild), s.appendChild(t.firstElementChild);
     }), this.nodes.paging.append(s), this.nodes.paging.hidden = !1;
   }
 };
-function M() {
-  ["slides", "wrapper", "playstop", "paging"].forEach((e) => $[e].call(this));
+function L() {
+  ["slides", "wrapper", "playstop", "paging"].forEach((e) => E[e].call(this));
 }
-function f() {
+function g() {
   this.activePage = 0, this._interval = null, this.autoplayStatus = "stop", this._metrics = {
     touchstartX: 0,
     touchmoveX: 0,
     moveX: 0,
     slideWidth: 0
-  }, M.call(this), this.changeActive(this.activePage), this.currentSettings.autoplay > 1 && this.nodes.playstop ? (this.autoplayStatus = "play", this.play()) : this.stop();
+  }, L.call(this), this.changeActive(this.activePage), this.currentSettings.autoplay > 1 && this.nodes.playstop ? (this.autoplayStatus = "play", this.play()) : this.stop();
 }
-function q() {
+function P() {
   this._metrics.slideWidth = this.visibleSlides[0].offsetWidth * this.currentSettings.group, this._metrics.distance = this.activePage * this._metrics.slideWidth, this.activePage === this.pagesLength - 1 && (this._metrics.distance = this.nodes.overflow.scrollWidth - this._metrics.slideWidth, this.currentSettings.spaceAround && (this._metrics.distance -= parseInt(
     window.getComputedStyle(this.nodes.overflow).getPropertyValue("padding-right"),
     10
   ))), this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance}px`;
 }
-function X() {
-  this.nodes.prev && (this.nodes.prev.innerHTML = this._templates.prev.tpl.replace(
-    "{text}",
-    this.activePage === 0 ? this._templates.prev.lastLabel : this._templates.prev.label
-  ), this.currentSettings.loop ? this.nodes.prev.hidden = !1 : this.nodes.prev.hidden = this.activePage === 0);
+function x() {
+  const t = (i, a) => {
+    const n = this.nodes[i];
+    if (!n) return;
+    const o = this._templates[i];
+    n.innerHTML = o.tpl.replace(
+      "{text}",
+      a ? o.lastLabel : o.label
+    ), this.currentSettings.loop ? n.hidden = !1 : n.hidden = a;
+  }, e = this.activePage === 0, s = this.activePage === this.pagesLength - 1;
+  t("prev", e), t("next", s);
 }
-function C() {
-  this.nodes.next && (this.nodes.next.innerHTML = this._templates.next.tpl.replace(
-    "{text}",
-    this.activePage === this.pagesLength - 1 ? this._templates.next.lastLabel : this._templates.next.label
-  ), this.currentSettings.loop ? this.nodes.next.hidden = !1 : this.nodes.next.hidden = this.activePage === this.pagesLength - 1);
-}
-function I(t) {
+function _(t) {
   t.querySelectorAll(
     "a, button, input, textarea, select, [tabindex]"
   ).forEach((s) => {
     s.hasAttribute("data-original-tabindex") || s.setAttribute("data-original-tabindex", s.getAttribute("tabindex")), s.setAttribute("tabindex", "-1"), s.setAttribute("aria-hidden", "true");
   });
 }
-function R(t) {
+function $(t) {
   t.querySelectorAll(
     '[tabindex="-1"], [aria-hidden="true"]'
   ).forEach((s) => {
@@ -67,54 +67,39 @@ function R(t) {
     i !== null && (i === "null" ? s.removeAttribute("tabindex") : s.setAttribute("tabindex", i), s.removeAttribute("data-original-tabindex")), s.removeAttribute("aria-hidden");
   });
 }
-function W() {
+function M() {
   this.visibleSlides = [], this.nodes.paging && this.nodes.pages.forEach((t, e) => {
-    let s = t;
-    const i = t.querySelector("button");
-    i && (s = i), e === this.activePage ? (s.setAttribute("aria-current", "true"), t.classList.add(l)) : (s.removeAttribute("aria-current"), t.classList.remove(l));
+    let s = t.querySelector("button") || t;
+    e === this.activePage ? (s.setAttribute("aria-current", "true"), t.classList.add(c)) : (s.removeAttribute("aria-current"), t.classList.remove(c));
   }), this.nodes.items.forEach((t, e) => {
     t.forEach((s, i) => {
-      e === this.activePage ? (s.removeAttribute("aria-hidden"), this.supportsInert ? s.inert = !1 : R(s), this.visibleSlides.push(s), setTimeout(() => {
-        i === 0 && this.autoplayStatus !== "play" && s.focus({ preventScroll: !0 });
-      }, 0)) : (s.setAttribute("aria-hidden", "true"), this.supportsInert ? s.inert = !0 : I(s));
+      e === this.activePage ? (s.removeAttribute("aria-hidden"), this.supportsInert ? s.inert = !1 : $(s), this.visibleSlides.push(s), i === 0 && this.autoplayStatus !== "play" && s.focus({ preventScroll: !0 })) : (s.setAttribute("aria-hidden", "true"), this.supportsInert ? s.inert = !0 : _(s));
     });
-  }), q.call(this), X.call(this), C.call(this);
+  }), P.call(this), x.call(this);
 }
-function S() {
+function b() {
   const t = {};
   let e = !1, s = 0;
   const i = arguments.length;
   Object.prototype.toString.call(arguments[0]) === "[object Boolean]" && (e = arguments[0], s++);
-  const r = function(o) {
-    for (const a in o)
-      Object.prototype.hasOwnProperty.call(o, a) && (e && Object.prototype.toString.call(o[a]) === "[object Object]" ? t[a] = S(!0, t[a], o[a]) : t[a] = o[a]);
+  const a = function(n) {
+    for (const o in n)
+      Object.prototype.hasOwnProperty.call(n, o) && (e && Object.prototype.toString.call(n[o]) === "[object Object]" ? t[o] = b(!0, t[o], n[o]) : t[o] = n[o]);
   };
   for (; s < i; s++) {
-    const o = arguments[s];
-    r(o);
+    const n = arguments[s];
+    a(n);
   }
   return t;
 }
-function O(t) {
+function X(t) {
   try {
     return JSON.parse(t);
   } catch {
     return {};
   }
 }
-function L() {
-  const t = this.settings.responsive.slice().reverse().find(
-    (e) => window.matchMedia(`(min-width: ${e.minWidth})`).matches
-  );
-  return t ? { ...this.settings.default, ...t } : this.settings.default;
-}
-let v, c = !1;
-function k() {
-  c || (c = !0, v = setTimeout(() => {
-    this.currentSettings = L.call(this), this.currentSettings.disable ? this.disable() : this.reinit(), c = !1, clearTimeout(v);
-  }, 200));
-}
-const N = {
+const q = {
   default: {
     loop: !0,
     group: 1,
@@ -123,81 +108,114 @@ const N = {
     autoplay: 0
   }
 };
-function F(t) {
-  const e = O(this.el.getAttribute(n));
-  this.settings = S(!0, N, t, e);
-  let s = this.settings.default;
-  return this.settings.responsive && (this.settings.responsive.sort(
-    (i, r) => parseInt(i.minWidth, 10) - parseInt(r.minWidth, 10)
-  ), s = L.call(this), this.settings.responsive.forEach((i) => {
-    window.matchMedia(`(min-width: ${i.minWidth})`).addEventListener("change", k.bind(this));
-  })), s;
-}
-function H() {
-  var e;
-  const t = {
-    paging: this.el.querySelector(`[${x}]`),
-    prev: this.el.querySelector(`[${b}]`),
-    next: this.el.querySelector(`[${w}]`),
-    playstop: this.el.querySelector(`[${g}]`),
-    overflow: this.el.querySelector(`[${P}]`),
-    wrapper: this.el.querySelector(`[${_}]`),
-    items: [].slice.call(this.el.querySelectorAll(`[${y}]`))
+function I(t = {}) {
+  const e = () => {
+    const l = this.settings.responsive.slice().reverse().find(
+      (h) => window.matchMedia(`(min-width: ${h.minWidth})`).matches
+    );
+    return l ? { ...this.settings.default, ...l } : this.settings.default;
   };
-  return t.paging && (t.pagingTpl = (e = t.paging) == null ? void 0 : e.cloneNode(!0)), t;
+  let s, i = !1;
+  const a = () => {
+    i || (i = !0, s = setTimeout(() => {
+      this.currentSettings = e.call(this), this.currentSettings.disable ? this.disable() : this.reinit(), i = !1, clearTimeout(s);
+    }, 200));
+  }, n = X(this.el.getAttribute(r));
+  this.settings = b(!0, {}, q, t, n);
+  let o = this.settings.default;
+  return this.settings.responsive && (this.settings.responsive.sort(
+    (l, h) => parseInt(l.minWidth, 10) - parseInt(h.minWidth, 10)
+  ), o = e.call(this), this.settings.responsive.forEach((l) => {
+    window.matchMedia(`(min-width: ${l.minWidth})`).addEventListener("change", a.bind(this));
+  })), o;
 }
-function D(t) {
-  let e = this.activePage;
-  const s = t.target, i = s.closest(`[${n}-playstop]`), r = s.closest(`[${n}-prev]`), o = s.closest(`[${n}-next]`), a = s.closest(`[${n}-paging]`);
-  if (i) {
-    this.toggleAutoplay();
-    return;
-  } else if (r)
-    e--;
-  else if (o)
-    e++;
-  else if (a && a.querySelector("button")) {
-    const h = s.closest(`[${n}-paging] li`);
-    e = this.nodes.pages.indexOf(h);
-  } else
-    return;
-  this.stop(), this.changeActive(e);
+function R() {
+  return {
+    paging: this.el.querySelector(`[${S}]`),
+    prev: this.el.querySelector(`[${m}]`),
+    next: this.el.querySelector(`[${v}]`),
+    playstop: this.el.querySelector(`[${p}]`),
+    overflow: this.el.querySelector(`[${T}]`),
+    wrapper: this.el.querySelector(`[${w}]`),
+    items: [...this.el.querySelectorAll(`[${f}]`)]
+  };
 }
-function B(t) {
-  let e = !1;
-  switch (t.key) {
-    case "ArrowUp":
-    case "ArrowLeft":
-      e = !0, this.changeActive(this.activePage - 1);
-      break;
-    case "ArrowDown":
-    case "ArrowRight":
-      e = !0, this.changeActive(this.activePage + 1);
-      break;
-    case "Home":
-      e = !0, this.changeActive(0);
-      break;
-    case "End":
-      e = !0, this.changeActive(this.pagesLength - 1);
-      break;
-  }
-  e && t.preventDefault();
+function W() {
+  const t = {}, e = (s, i, a) => {
+    var n;
+    if (s) {
+      const o = (n = s.getAttribute(i)) == null ? void 0 : n.split("|");
+      if (o && o.length === a.length)
+        return {
+          tpl: s.innerHTML,
+          ...Object.fromEntries(a.map((l, h) => [l, o[h]]))
+        };
+    }
+    return null;
+  };
+  return this.nodes && (t.playstop = e(this.nodes.playstop, p, [
+    "playLabel",
+    "stopLabel"
+  ]), t.prev = e(this.nodes.prev, m, [
+    "label",
+    "lastLabel"
+  ]), t.next = e(this.nodes.next, v, [
+    "label",
+    "lastLabel"
+  ]), this.nodes.paging && (t.pagingTpl = this.nodes.paging.innerHTML)), t;
 }
-let p, u, d;
-function K(t) {
-  p && window.cancelAnimationFrame(p), p = window.requestAnimationFrame(() => {
+function C(t) {
+  const e = t.target, s = {
+    [`${r}-playstop`]: () => this.toggleAutoplay(),
+    [`${r}-prev`]: () => this.changeActive(this.activePage - 1),
+    [`${r}-next`]: () => this.changeActive(this.activePage + 1),
+    [`${r}-paging`]: () => {
+      const i = e.closest(`[${r}-paging] li`);
+      if (i) {
+        const a = this.nodes.pages.indexOf(i);
+        this.changeActive(a);
+      }
+    }
+  };
+  for (const [i, a] of Object.entries(s))
+    if (e.closest(`[${i}]`)) {
+      i !== `${r}-playstop` && this.stop(), a();
+      break;
+    }
+}
+function O(t) {
+  const s = {
+    ArrowUp: () => this.changeActive(this.activePage - 1),
+    ArrowLeft: () => this.changeActive(this.activePage - 1),
+    ArrowDown: () => this.changeActive(this.activePage + 1),
+    ArrowRight: () => this.changeActive(this.activePage + 1),
+    Home: () => this.changeActive(0),
+    End: () => this.changeActive(this.pagesLength - 1)
+  }[t.key];
+  s && (s(), t.preventDefault());
+}
+const u = {
+  onTouchStart: null,
+  onTouchMove: null,
+  onTouchEnd: null
+};
+function d(t, e) {
+  u[t] && window.cancelAnimationFrame(u[t]), u[t] = window.requestAnimationFrame(e);
+}
+function N(t) {
+  d("onTouchStart", () => {
     this.stop(), this.nodes.overflow.style.transition = "none", this._metrics.touchstartX = Math.round(t.touches[0].pageX), this._metrics.slideWidth = this.nodes.wrapper.offsetWidth;
   });
 }
-function V(t) {
-  u && window.cancelAnimationFrame(u), u = window.requestAnimationFrame(() => {
+function F(t) {
+  d("onTouchMove", () => {
     this._metrics.touchmoveX = Math.round(t.touches[0].pageX), this._metrics.moveX = this._metrics.touchstartX - this._metrics.touchmoveX, this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance - this._metrics.moveX}px)`;
   });
 }
-function j() {
-  d && window.cancelAnimationFrame(d), d = window.requestAnimationFrame(() => {
+function H() {
+  d("onTouchEnd", () => {
     let t = this.activePage;
-    if (this.nodes.overflow.style.transition = A, this._metrics.moveX > this._metrics.slideWidth / 3)
+    if (this.nodes.overflow.style.transition = y, this._metrics.moveX > this._metrics.slideWidth / 3)
       t++;
     else if (this._metrics.moveX < -this._metrics.slideWidth / 3)
       t--;
@@ -208,43 +226,28 @@ function j() {
     this.changeActive(t, !0);
   });
 }
-function G() {
-  const t = D.bind(this), e = K.bind(this), s = V.bind(this), i = j.bind(this), r = B.bind(this), o = this.pause.bind(this), a = this.play.bind(this), h = function(T) {
-    T.target.closest(`[${g}]`) ? this.play() : this.pause();
-  }, E = this.play.bind(this);
-  this.el.addEventListener("click", t), this.el.addEventListener("keydown", r), this.el.addEventListener("focusin", h.bind(this)), this.el.addEventListener("focusout", E.bind(this)), this.nodes.wrapper.addEventListener("touchstart", e), this.nodes.wrapper.addEventListener("touchmove", s), this.nodes.wrapper.addEventListener("touchend", i), this.el.addEventListener("mouseenter", o), this.el.addEventListener("mouseleave", a);
+function A(t = !0) {
+  const e = t ? "addEventListener" : "removeEventListener", s = (i) => {
+    i.target.closest(`[${p}]`) ? this.play() : this.pause();
+  };
+  ["touchstart", "touchmove", "touchend"].forEach((i, a) => {
+    const n = [N, F, H][a];
+    this.nodes.wrapper[e](i, n.bind(this));
+  }), this.el[e]("click", C.bind(this)), this.el[e]("keydown", O.bind(this)), this.el[e]("focusin", s), this.el[e]("focusout", this.play.bind(this)), this.el[e]("mouseenter", this.pause.bind(this)), this.el[e]("mouseleave", this.play.bind(this));
 }
-function J() {
+function k() {
+  A.call(this, !0);
+}
+function j() {
+  A.call(this, !1);
+}
+const B = (() => {
   const t = document.createElement("div");
   return t.setAttribute("inert", ""), t.inert === !0;
-}
-class U {
+})();
+class D {
   constructor(e, s) {
-    if (this.el = e, this.currentSettings = F.call(this, s), this.nodes = H.call(this), this._templates = {}, this.supportsInert = J(), G.call(this), this.nodes.playstop) {
-      const i = this.nodes.playstop.getAttribute(g).split("|");
-      this._templates.playstop = {
-        tpl: this.nodes.playstop.innerHTML,
-        playLabel: i[0],
-        stopLabel: i[1]
-      };
-    }
-    if (this.nodes.prev) {
-      const i = this.nodes.prev.getAttribute(b).split("|");
-      this._templates.prev = {
-        tpl: this.nodes.prev.innerHTML,
-        label: i[0],
-        lastLabel: i[1]
-      };
-    }
-    if (this.nodes.next) {
-      const i = this.nodes.next.getAttribute(w).split("|");
-      this._templates.next = {
-        tpl: this.nodes.next.innerHTML,
-        label: i[0],
-        lastLabel: i[1]
-      };
-    }
-    this.currentSettings.disable || f.call(this);
+    this.el = e, this.supportsInert = B, this.currentSettings = I.call(this, s), this.nodes = R.call(this), this._templates = W.call(this), k.call(this), this.currentSettings.disable || g.call(this);
   }
   play() {
     if (!this.nodes.playstop || this.autoplayStatus === "stop")
@@ -271,25 +274,25 @@ class U {
     this.nodes.playstop && (this.autoplayStatus === "play" ? this.stop() : this.autoplayStatus === "stop" && (this.autoplayStatus = "play", this.play()));
   }
   changeActive(e, s) {
-    this.activePage = e, this.activePage < 0 && (this.activePage = this.currentSettings.loop && !s ? this.pagesLength - 1 : 0), this.activePage > this.pagesLength - 1 && (this.activePage = this.currentSettings.loop && !s ? 0 : this.pagesLength - 1), W.call(this);
+    this.activePage = e, this.activePage < 0 && (this.activePage = this.currentSettings.loop && !s ? this.pagesLength - 1 : 0), this.activePage > this.pagesLength - 1 && (this.activePage = this.currentSettings.loop && !s ? 0 : this.pagesLength - 1), M.call(this);
   }
   reinit() {
-    this.disable(), this.nodes.items = [].slice.call(this.el.querySelectorAll(`[${y}]`)), f.call(this);
+    this.disable(), this.nodes.items = [...this.el.querySelectorAll(`[${f}]`)], g.call(this);
   }
   disable() {
-    this.stop(), this.nodes.wrapper.removeEventListener("touchstart", this.onTouchStart), this.nodes.wrapper.removeEventListener("touchmove", this.onTouchMove), this.nodes.wrapper.removeEventListener("touchend", this.onTouchEnd), this.el.removeEventListener("click", this.onClick), this.el.removeEventListener("keydown", this.onKeydown), this.el.removeEventListener("mouseenter", this.onMouseEnter), this.el.removeEventListener("mouseleave", this.onMouseLeave), this.nodes.paging.hidden = !0, this.nodes.prev.hidden = !0, this.nodes.next.hidden = !0, this.nodes.playstop.hidden = !0, this.nodes.overflow.removeAttribute("style"), this.nodes.wrapper.removeAttribute("style"), this.nodes.items.forEach((e) => {
+    this.stop(), j.call(this), this.nodes.paging.hidden = !0, this.nodes.prev.hidden = !0, this.nodes.next.hidden = !0, this.nodes.playstop.hidden = !0, this.nodes.overflow.removeAttribute("style"), this.nodes.wrapper.removeAttribute("style"), this.nodes.items.forEach((e) => {
       e == null || e.forEach((s) => {
         s.removeAttribute("tabindex"), s.removeAttribute("aria-hidden"), s.removeAttribute("style");
       });
-    }), this.el.classList.remove(l);
+    }), this.el.classList.remove(c);
   }
 }
-const m = (t, e) => {
-  !t.pmCarousel && t.hasAttribute(n) && (t.pmCarousel = new U(t, e));
-}, Y = function(t = {}, e) {
-  e !== null && (e = e || document.querySelectorAll(`[${n}]`), e.length ? e.forEach((s) => m(s, t)) : m(e, t));
+const V = (t, e) => {
+  !t.pmCarousel && t.hasAttribute(r) && (t.pmCarousel = new D(t, e));
+}, K = function(t = {}, e) {
+  e && (e = e instanceof NodeList ? [...e] : [e], e.forEach((s) => V(s, t)));
 };
-window.pmCarousel = Y;
+window.pmCarousel = K;
 export {
-  Y as default
+  K as default
 };
