@@ -92,14 +92,14 @@ function b() {
   }
   return t;
 }
-function X(t) {
+function q(t) {
   try {
     return JSON.parse(t);
   } catch {
     return {};
   }
 }
-const q = {
+const I = {
   default: {
     loop: !0,
     group: 1,
@@ -108,7 +108,7 @@ const q = {
     autoplay: 0
   }
 };
-function I(t = {}) {
+function R(t = {}) {
   const e = () => {
     const l = this.settings.responsive.slice().reverse().find(
       (h) => window.matchMedia(`(min-width: ${h.minWidth})`).matches
@@ -120,8 +120,8 @@ function I(t = {}) {
     i || (i = !0, s = setTimeout(() => {
       this.currentSettings = e.call(this), this.currentSettings.disable ? this.disable() : this.reinit(), i = !1, clearTimeout(s);
     }, 200));
-  }, n = X(this.el.getAttribute(r));
-  this.settings = b(!0, {}, q, t, n);
+  }, n = q(this.el.getAttribute(r));
+  this.settings = b(!0, {}, I, t, n);
   let o = this.settings.default;
   return this.settings.responsive && (this.settings.responsive.sort(
     (l, h) => parseInt(l.minWidth, 10) - parseInt(h.minWidth, 10)
@@ -129,7 +129,7 @@ function I(t = {}) {
     window.matchMedia(`(min-width: ${l.minWidth})`).addEventListener("change", a.bind(this));
   })), o;
 }
-function R() {
+function X() {
   return {
     paging: this.el.querySelector(`[${S}]`),
     prev: this.el.querySelector(`[${m}]`),
@@ -209,21 +209,19 @@ function N(t) {
 }
 function F(t) {
   d("onTouchMove", () => {
-    this._metrics.touchmoveX = Math.round(t.touches[0].pageX), this._metrics.moveX = this._metrics.touchstartX - this._metrics.touchmoveX, this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance - this._metrics.moveX}px)`;
+    this._metrics.moveX = this._metrics.touchstartX - Math.round(t.touches[0].pageX), this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance - this._metrics.moveX}px)`;
   });
 }
 function H() {
   d("onTouchEnd", () => {
-    let t = this.activePage;
-    if (this.nodes.overflow.style.transition = y, this._metrics.moveX > this._metrics.slideWidth / 3)
-      t++;
-    else if (this._metrics.moveX < -this._metrics.slideWidth / 3)
-      t--;
-    else {
+    const t = this._metrics.moveX > this._metrics.slideWidth / 3, e = this._metrics.moveX < -this._metrics.slideWidth / 3;
+    this.nodes.overflow.style.transition = y;
+    let s = this.activePage;
+    if (this._metrics.moveX = 0, !t && !e) {
       this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance}px)`;
       return;
     }
-    this.changeActive(t, !0);
+    t ? s += 1 : s -= 1, this.changeActive(s, !0);
   });
 }
 function A(t = !0) {
@@ -247,7 +245,7 @@ const B = (() => {
 })();
 class D {
   constructor(e, s) {
-    this.el = e, this.supportsInert = B, this.currentSettings = I.call(this, s), this.nodes = R.call(this), this._templates = W.call(this), k.call(this), this.currentSettings.disable || g.call(this);
+    this.el = e, this.supportsInert = B, this.currentSettings = R.call(this, s), this.nodes = X.call(this), this._templates = W.call(this), k.call(this), this.currentSettings.disable || g.call(this);
   }
   play() {
     if (!this.nodes.playstop || this.autoplayStatus === "stop")
