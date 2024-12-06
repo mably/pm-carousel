@@ -18,8 +18,8 @@ const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-o
     if (!this.nodes.paging) return;
     let t, e;
     const s = document.createDocumentFragment();
-    this.nodes.paging.innerHTML = "", this.nodes.pages = [], this.nodes.items.forEach((i, a) => {
-      e = this._templates.pagingTpl, t = document.createElement("div"), t.innerHTML = e.replace("{nbr}", ++a), this.nodes.pages.push(t.firstElementChild), s.appendChild(t.firstElementChild);
+    this.nodes.paging.innerHTML = "", this.nodes.pages = [], this.nodes.items.forEach((i, n) => {
+      e = this._templates.pagingTpl, t = document.createElement("div"), t.innerHTML = e.replace("{nbr}", ++n), this.nodes.pages.push(t.firstElementChild), s.appendChild(t.firstElementChild);
     }), this.nodes.paging.append(s), this.nodes.paging.hidden = !1;
   }
 };
@@ -41,14 +41,14 @@ function P() {
   ))), this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance}px`;
 }
 function x() {
-  const t = (i, a) => {
-    const n = this.nodes[i];
-    if (!n) return;
-    const o = this._templates[i];
-    n.innerHTML = o.tpl.replace(
+  const t = (i, n) => {
+    const o = this.nodes[i];
+    if (!o) return;
+    const a = this._templates[i];
+    o.innerHTML = a.tpl.replace(
       "{text}",
-      a ? o.lastLabel : o.label
-    ), this.currentSettings.loop ? n.hidden = !1 : n.hidden = a;
+      n ? a.lastLabel : a.label
+    ), this.currentSettings.loop ? o.hidden = !1 : o.hidden = n;
   }, e = this.activePage === 0, s = this.activePage === this.pagesLength - 1;
   t("prev", e), t("next", s);
 }
@@ -73,7 +73,7 @@ function M() {
     e === this.activePage ? (s.setAttribute("aria-current", "true"), t.classList.add(c)) : (s.removeAttribute("aria-current"), t.classList.remove(c));
   }), this.nodes.items.forEach((t, e) => {
     t.forEach((s, i) => {
-      e === this.activePage ? (s.removeAttribute("aria-hidden"), this.supportsInert ? s.inert = !1 : $(s), this.visibleSlides.push(s), i === 0 && this.autoplayStatus !== "play" && s.focus({ preventScroll: !0 })) : (s.setAttribute("aria-hidden", "true"), this.supportsInert ? s.inert = !0 : _(s));
+      e === this.activePage ? (s.removeAttribute("aria-hidden"), this.supportsInert ? s.inert = !1 : $(s), this.visibleSlides.push(s), this.focused && i === 0 && this.autoplayStatus !== "play" && s.focus({ preventScroll: !0 })) : (s.setAttribute("aria-hidden", "true"), this.supportsInert ? s.inert = !0 : _(s));
     });
   }), P.call(this), x.call(this);
 }
@@ -82,13 +82,13 @@ function b() {
   let e = !1, s = 0;
   const i = arguments.length;
   Object.prototype.toString.call(arguments[0]) === "[object Boolean]" && (e = arguments[0], s++);
-  const a = function(n) {
-    for (const o in n)
-      Object.prototype.hasOwnProperty.call(n, o) && (e && Object.prototype.toString.call(n[o]) === "[object Object]" ? t[o] = b(!0, t[o], n[o]) : t[o] = n[o]);
+  const n = function(o) {
+    for (const a in o)
+      Object.prototype.hasOwnProperty.call(o, a) && (e && Object.prototype.toString.call(o[a]) === "[object Object]" ? t[a] = b(!0, t[a], o[a]) : t[a] = o[a]);
   };
   for (; s < i; s++) {
-    const n = arguments[s];
-    a(n);
+    const o = arguments[s];
+    n(o);
   }
   return t;
 }
@@ -116,18 +116,18 @@ function R(t = {}) {
     return l ? { ...this.settings.default, ...l } : this.settings.default;
   };
   let s, i = !1;
-  const a = () => {
+  const n = () => {
     i || (i = !0, s = setTimeout(() => {
       this.currentSettings = e.call(this), this.currentSettings.disable ? this.disable() : this.reinit(), i = !1, clearTimeout(s);
     }, 200));
-  }, n = q(this.el.getAttribute(r));
-  this.settings = b(!0, {}, I, t, n);
-  let o = this.settings.default;
+  }, o = q(this.el.getAttribute(r));
+  this.settings = b(!0, {}, I, t, o);
+  let a = this.settings.default;
   return this.settings.responsive && (this.settings.responsive.sort(
     (l, h) => parseInt(l.minWidth, 10) - parseInt(h.minWidth, 10)
-  ), o = e.call(this), this.settings.responsive.forEach((l) => {
-    window.matchMedia(`(min-width: ${l.minWidth})`).addEventListener("change", a.bind(this));
-  })), o;
+  ), a = e.call(this), this.settings.responsive.forEach((l) => {
+    window.matchMedia(`(min-width: ${l.minWidth})`).addEventListener("change", n.bind(this));
+  })), a;
 }
 function X() {
   return {
@@ -141,14 +141,14 @@ function X() {
   };
 }
 function W() {
-  const t = {}, e = (s, i, a) => {
-    var n;
+  const t = {}, e = (s, i, n) => {
+    var o;
     if (s) {
-      const o = (n = s.getAttribute(i)) == null ? void 0 : n.split("|");
-      if (o && o.length === a.length)
+      const a = (o = s.getAttribute(i)) == null ? void 0 : o.split("|");
+      if (a && a.length === n.length)
         return {
           tpl: s.innerHTML,
-          ...Object.fromEntries(a.map((l, h) => [l, o[h]]))
+          ...Object.fromEntries(n.map((l, h) => [l, a[h]]))
         };
     }
     return null;
@@ -172,14 +172,14 @@ function C(t) {
     [`${r}-paging`]: () => {
       const i = e.closest(`[${r}-paging] li`);
       if (i) {
-        const a = this.nodes.pages.indexOf(i);
-        this.changeActive(a);
+        const n = this.nodes.pages.indexOf(i);
+        this.changeActive(n);
       }
     }
   };
-  for (const [i, a] of Object.entries(s))
+  for (const [i, n] of Object.entries(s))
     if (e.closest(`[${i}]`)) {
-      i !== `${r}-playstop` && this.stop(), a();
+      i !== `${r}-playstop` && this.stop(), n();
       break;
     }
 }
@@ -225,13 +225,15 @@ function H() {
   });
 }
 function A(t = !0) {
-  const e = t ? "addEventListener" : "removeEventListener", s = (i) => {
-    i.target.closest(`[${p}]`) ? this.play() : this.pause();
+  const e = t ? "addEventListener" : "removeEventListener", s = (n) => {
+    this.focused = !0, n.target.closest(`[${p}]`) ? this.play() : this.pause();
+  }, i = () => {
+    this.focused = !1, this.play.bind(this);
   };
-  ["touchstart", "touchmove", "touchend"].forEach((i, a) => {
-    const n = [N, F, H][a];
-    this.nodes.wrapper[e](i, n.bind(this));
-  }), this.el[e]("click", C.bind(this)), this.el[e]("keydown", O.bind(this)), this.el[e]("focusin", s), this.el[e]("focusout", this.play.bind(this)), this.el[e]("mouseenter", this.pause.bind(this)), this.el[e]("mouseleave", this.play.bind(this));
+  ["touchstart", "touchmove", "touchend"].forEach((n, o) => {
+    const a = [N, F, H][o];
+    this.nodes.wrapper[e](n, a.bind(this));
+  }), this.el[e]("click", C.bind(this)), this.el[e]("keydown", O.bind(this)), this.el[e]("focusin", s), this.el[e]("focusout", i), this.el[e]("mouseenter", this.pause.bind(this)), this.el[e]("mouseleave", this.play.bind(this));
 }
 function k() {
   A.call(this, !0);
