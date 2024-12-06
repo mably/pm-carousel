@@ -7,7 +7,13 @@ function manageEvents(add = true) {
 	const method = add ? "addEventListener" : "removeEventListener"
 
 	const handleFocusIn = (event) => {
+		this.focused = true
 		!event.target.closest(`[${ATTRPLAYSTOP}]`) ? this.pause() : this.play()
+	}
+
+	const handleFocusOut = () => {
+		this.focused = false
+		this.play.bind(this)
 	}
 
 	// Touch event on the wrapper
@@ -20,7 +26,7 @@ function manageEvents(add = true) {
 	this.el[method]("click", onClick.bind(this))
 	this.el[method]("keydown", onKeydown.bind(this))
 	this.el[method]("focusin", handleFocusIn)
-	this.el[method]("focusout", this.play.bind(this))
+	this.el[method]("focusout", handleFocusOut)
 	this.el[method]("mouseenter", this.pause.bind(this))
 	this.el[method]("mouseleave", this.play.bind(this))
 }
