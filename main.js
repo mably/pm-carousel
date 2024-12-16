@@ -116,10 +116,21 @@ class Plugin {
 		this.stop()
 		removeEvents.call(this)
 
-		this.nodes.paging.hidden = true
-		this.nodes.prev.hidden = true
-		this.nodes.next.hidden = true
-		this.nodes.playstop.hidden = true
+		if (this.nodes.paging) {
+			this.nodes.paging.hidden = true
+		}
+
+		if (this.nodes.prev) {
+			this.nodes.prev.hidden = true
+		}
+
+		if (this.nodes.next) {
+			this.nodes.next.hidden = true
+		}
+
+		if (this.nodes.playstop) {
+			this.nodes.playstop.hidden = true
+		}
 
 		this.nodes.overflow.removeAttribute("style")
 		this.nodes.wrapper.removeAttribute("style")
