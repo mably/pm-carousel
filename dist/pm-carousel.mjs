@@ -1,298 +1,534 @@
-const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-overflow`, f = `${r}-item`, m = `${r}-prev`, v = `${r}-next`, p = `${r}-playstop`, y = "transform .5s ease-in-out", c = "is-active", E = {
+const ATTR = "data-pm-carousel";
+const ATTRPAGING = `${ATTR}-paging`;
+const ATTRWRAPPER = `${ATTR}-wrapper`;
+const ATTROVERFLOW = `${ATTR}-overflow`;
+const ATTRITEM = `${ATTR}-item`;
+const ATTRPREV = `${ATTR}-prev`;
+const ATTRNEXT = `${ATTR}-next`;
+const ATTRPLAYSTOP = `${ATTR}-playstop`;
+const TRANSITION = "transform .5s ease-in-out";
+const ACTIVECLASS = "is-active";
+const buildActions = {
   playstop: function() {
-    this.nodes.playstop && (this.nodes.playstop.hidden = !this.currentSettings.autoplay);
+    if (!this.nodes.playstop) return;
+    this.nodes.playstop.hidden = !this.currentSettings.autoplay;
   },
   wrapper: function() {
-    const t = this.currentSettings.noStartSpace ? 0 : this.currentSettings.spaceAround;
-    this.nodes.overflow.style.transform = `translateX(${this.activePage * -100 + t}%)`, this.currentSettings.noStartSpace ? this.nodes.overflow.style.paddingRight = this.currentSettings.spaceAround + "%" : (this.nodes.overflow.style.paddingRight = t + "%", this.nodes.overflow.style.paddingLeft = t + "%"), this.nodes.overflow.style.transition = y, this.nodes.overflow.style.display = "flex", this.nodes.wrapper.style.overflow = "hidden", this.el.classList.add(c);
+    const startSpace = this.currentSettings.noStartSpace ? 0 : this.currentSettings.spaceAround;
+    this.nodes.overflow.style.transform = `translateX(${this.activePage * -100 + startSpace}%)`;
+    if (this.currentSettings.noStartSpace) {
+      this.nodes.overflow.style.paddingRight = this.currentSettings.spaceAround + "%";
+    } else {
+      this.nodes.overflow.style.paddingRight = startSpace + "%";
+      this.nodes.overflow.style.paddingLeft = startSpace + "%";
+    }
+    this.nodes.overflow.style.transition = TRANSITION;
+    this.nodes.overflow.style.display = "flex";
+    this.nodes.wrapper.style.overflow = "hidden";
+    this.el.classList.add(ACTIVECLASS);
   },
   slides: function() {
-    const t = [];
-    for (this.nodes.items.forEach((e, s) => {
-      e.setAttribute("tabindex", "-1"), e.setAttribute(r + "-item", s), e.style.flex = `1 0 ${100 / this.currentSettings.group}%`, e.style.overflow = "hidden";
-    }); this.nodes.items.length > 0; )
-      t.push(this.nodes.items.splice(0, this.currentSettings.group));
-    this.nodes.items = t, this.pagesLength = this.nodes.items.length;
+    const newSlides = [];
+    this.nodes.items.forEach((node, index) => {
+      node.setAttribute("tabindex", "-1");
+      node.setAttribute(ATTR + "-item", index);
+      node.style.flex = `1 0 ${100 / this.currentSettings.group}%`;
+      node.style.overflow = "hidden";
+    });
+    while (this.nodes.items.length > 0) {
+      newSlides.push(this.nodes.items.splice(0, this.currentSettings.group));
+    }
+    this.nodes.items = newSlides;
+    this.pagesLength = this.nodes.items.length;
   },
   paging: function() {
     if (!this.nodes.paging) return;
-    let t, e;
-    const s = document.createDocumentFragment();
-    this.nodes.paging.innerHTML = "", this.nodes.pages = [], this.nodes.items.forEach((i, n) => {
-      e = this._templates.pagingTpl, t = document.createElement("div"), t.innerHTML = e.replace("{nbr}", ++n), this.nodes.pages.push(t.firstElementChild), s.appendChild(t.firstElementChild);
-    }), this.nodes.paging.append(s), this.nodes.paging.hidden = !1;
+    let newPage, btnString;
+    const pages = document.createDocumentFragment();
+    this.nodes.paging.innerHTML = "";
+    this.nodes.pages = [];
+    this.nodes.items.forEach((_node, index) => {
+      btnString = this._templates.pagingTpl;
+      newPage = document.createElement("div");
+      newPage.innerHTML = btnString.replace("{nbr}", ++index);
+      this.nodes.pages.push(newPage.firstElementChild);
+      pages.appendChild(newPage.firstElementChild);
+    });
+    this.nodes.paging.append(pages);
+    this.nodes.paging.hidden = false;
   }
 };
-function L() {
-  ["slides", "wrapper", "playstop", "paging"].forEach((e) => E[e].call(this));
+function build() {
+  const elements = ["slides", "wrapper", "playstop", "paging"];
+  elements.forEach((action) => buildActions[action].call(this));
 }
-function g() {
-  this.activePage = 0, this._interval = null, this.autoplayStatus = "stop", this._metrics = {
+function init() {
+  this.activePage = 0;
+  this._interval = null;
+  this.autoplayStatus = "stop";
+  this._metrics = {
     touchstartX: 0,
     touchmoveX: 0,
     moveX: 0,
     slideWidth: 0
-  }, L.call(this), this.changeActive(this.activePage), this.currentSettings.autoplay > 1 && this.nodes.playstop ? (this.autoplayStatus = "play", this.play()) : this.stop();
-}
-function P() {
-  this._metrics.slideWidth = this.visibleSlides[0].offsetWidth * this.currentSettings.group, this._metrics.distance = this.activePage * this._metrics.slideWidth, this.activePage === this.pagesLength - 1 && (this._metrics.distance = this.nodes.overflow.scrollWidth - this._metrics.slideWidth, this.currentSettings.spaceAround && (this._metrics.distance -= parseInt(
-    window.getComputedStyle(this.nodes.overflow).getPropertyValue("padding-right"),
-    10
-  ))), this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance}px`;
-}
-function x() {
-  const t = (i, n) => {
-    const o = this.nodes[i];
-    if (!o) return;
-    const a = this._templates[i];
-    o.innerHTML = a.tpl.replace(
-      "{text}",
-      n ? a.lastLabel : a.label
-    ), this.currentSettings.loop ? o.hidden = !1 : o.hidden = n;
-  }, e = this.activePage === 0, s = this.activePage === this.pagesLength - 1;
-  t("prev", e), t("next", s);
-}
-function _(t) {
-  t.querySelectorAll(
-    "a, button, input, textarea, select, [tabindex]"
-  ).forEach((s) => {
-    s.hasAttribute("data-original-tabindex") || s.setAttribute("data-original-tabindex", s.getAttribute("tabindex")), s.setAttribute("tabindex", "-1"), s.setAttribute("aria-hidden", "true");
-  });
-}
-function $(t) {
-  t.querySelectorAll(
-    '[tabindex="-1"], [aria-hidden="true"]'
-  ).forEach((s) => {
-    const i = s.getAttribute("data-original-tabindex");
-    i !== null && (i === "null" ? s.removeAttribute("tabindex") : s.setAttribute("tabindex", i), s.removeAttribute("data-original-tabindex")), s.removeAttribute("aria-hidden");
-  });
-}
-function M() {
-  this.visibleSlides = [], this.nodes.paging && this.nodes.pages.forEach((t, e) => {
-    let s = t.querySelector("button") || t;
-    e === this.activePage ? (s.setAttribute("aria-current", "true"), t.classList.add(c)) : (s.removeAttribute("aria-current"), t.classList.remove(c));
-  }), this.nodes.items.forEach((t, e) => {
-    t.forEach((s, i) => {
-      e === this.activePage ? (s.removeAttribute("aria-hidden"), this.supportsInert ? s.inert = !1 : $(s), this.visibleSlides.push(s), this.focused && i === 0 && this.autoplayStatus !== "play" && s.focus({ preventScroll: !0 })) : (s.setAttribute("aria-hidden", "true"), this.supportsInert ? s.inert = !0 : _(s));
-    });
-  }), P.call(this), x.call(this);
-}
-function b() {
-  const t = {};
-  let e = !1, s = 0;
-  const i = arguments.length;
-  Object.prototype.toString.call(arguments[0]) === "[object Boolean]" && (e = arguments[0], s++);
-  const n = function(o) {
-    for (const a in o)
-      Object.prototype.hasOwnProperty.call(o, a) && (e && Object.prototype.toString.call(o[a]) === "[object Object]" ? t[a] = b(!0, t[a], o[a]) : t[a] = o[a]);
   };
-  for (; s < i; s++) {
-    const o = arguments[s];
-    n(o);
-  }
-  return t;
-}
-function q(t) {
-  try {
-    return JSON.parse(t);
-  } catch {
-    return {};
+  build.call(this);
+  this.changeActive(this.activePage);
+  if (this.currentSettings.autoplay > 1 && this.nodes.playstop) {
+    this.autoplayStatus = "play";
+    this.play();
+  } else {
+    this.stop();
   }
 }
-const I = {
-  default: {
-    loop: !0,
-    group: 1,
-    spaceAround: 0,
-    noStartSpace: !1,
-    autoplay: 0
-  }
-};
-function R(t = {}) {
-  const e = () => {
-    const l = this.settings.responsive.slice().reverse().find(
-      (h) => window.matchMedia(`(min-width: ${h.minWidth})`).matches
-    );
-    return l ? { ...this.settings.default, ...l } : this.settings.default;
-  };
-  let s, i = !1;
-  const n = () => {
-    i || (i = !0, s = setTimeout(() => {
-      this.currentSettings = e.call(this), this.currentSettings.disable ? this.disable() : this.reinit(), i = !1, clearTimeout(s);
-    }, 200));
-  }, o = q(this.el.getAttribute(r));
-  this.settings = b(!0, {}, I, t, o);
-  let a = this.settings.default;
-  return this.settings.responsive && (this.settings.responsive.sort(
-    (l, h) => parseInt(l.minWidth, 10) - parseInt(h.minWidth, 10)
-  ), a = e.call(this), this.settings.responsive.forEach((l) => {
-    window.matchMedia(`(min-width: ${l.minWidth})`).addEventListener("change", n.bind(this));
-  })), a;
-}
-function X() {
-  return {
-    paging: this.el.querySelector(`[${S}]`),
-    prev: this.el.querySelector(`[${m}]`),
-    next: this.el.querySelector(`[${v}]`),
-    playstop: this.el.querySelector(`[${p}]`),
-    overflow: this.el.querySelector(`[${T}]`),
-    wrapper: this.el.querySelector(`[${w}]`),
-    items: [...this.el.querySelectorAll(`[${f}]`)]
-  };
-}
-function W() {
-  const t = {}, e = (s, i, n) => {
-    var o;
-    if (s) {
-      const a = (o = s.getAttribute(i)) == null ? void 0 : o.split("|");
-      if (a && a.length === n.length)
-        return {
-          tpl: s.innerHTML,
-          ...Object.fromEntries(n.map((l, h) => [l, a[h]]))
-        };
+function updateScroll() {
+  this._metrics.slideWidth = this.visibleSlides[0].offsetWidth * this.currentSettings.group;
+  this._metrics.distance = this.activePage * this._metrics.slideWidth;
+  if (this.activePage === this.pagesLength - 1) {
+    this._metrics.distance = this.nodes.overflow.scrollWidth - this._metrics.slideWidth;
+    if (this.currentSettings.spaceAround) {
+      this._metrics.distance -= parseInt(
+        window.getComputedStyle(this.nodes.overflow).getPropertyValue("padding-right"),
+        10
+      );
     }
-    return null;
-  };
-  return this.nodes && (t.playstop = e(this.nodes.playstop, p, [
-    "playLabel",
-    "stopLabel"
-  ]), t.prev = e(this.nodes.prev, m, [
-    "label",
-    "lastLabel"
-  ]), t.next = e(this.nodes.next, v, [
-    "label",
-    "lastLabel"
-  ]), this.nodes.paging && (t.pagingTpl = this.nodes.paging.innerHTML)), t;
+  }
+  this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance}px`;
 }
-function C(t) {
-  const e = t.target, s = {
-    [`${r}-playstop`]: () => this.toggleAutoplay(),
-    [`${r}-prev`]: () => this.changeActive(this.activePage - 1),
-    [`${r}-next`]: () => this.changeActive(this.activePage + 1),
-    [`${r}-paging`]: () => {
-      const i = e.closest(`[${r}-paging] li`);
-      if (i) {
-        const n = this.nodes.pages.indexOf(i);
-        this.changeActive(n);
+function updateNavBtns() {
+  const updateBtn = (type, condition) => {
+    const node = this.nodes[type];
+    if (!node) return;
+    const template = this._templates[type];
+    node.innerHTML = template.tpl.replace(
+      "{text}",
+      condition ? template.lastLabel : template.label
+    );
+    this.currentSettings.loop ? node.hidden = false : node.hidden = condition;
+  };
+  const isFirstPage = this.activePage === 0;
+  const isLastPage = this.activePage === this.pagesLength - 1;
+  updateBtn("prev", isFirstPage);
+  updateBtn("next", isLastPage);
+}
+function disableKeyboardNavigation(element) {
+  const focusableElements = element.querySelectorAll(
+    "a, button, input, textarea, select, [tabindex]"
+  );
+  focusableElements.forEach((el) => {
+    if (!el.hasAttribute("data-original-tabindex")) {
+      el.setAttribute("data-original-tabindex", el.getAttribute("tabindex"));
+    }
+    el.setAttribute("tabindex", "-1");
+    el.setAttribute("aria-hidden", "true");
+  });
+}
+function enableKeyboardNavigation(element) {
+  const focusableElements = element.querySelectorAll(
+    '[tabindex="-1"], [aria-hidden="true"]'
+  );
+  focusableElements.forEach((el) => {
+    const originalTabIndex = el.getAttribute("data-original-tabindex");
+    if (originalTabIndex !== null) {
+      if (originalTabIndex === "null") {
+        el.removeAttribute("tabindex");
+      } else {
+        el.setAttribute("tabindex", originalTabIndex);
+      }
+      el.removeAttribute("data-original-tabindex");
+    }
+    el.removeAttribute("aria-hidden");
+  });
+}
+function setActive() {
+  this.visibleSlides = [];
+  if (this.nodes.paging) {
+    this.nodes.pages.forEach((node, index) => {
+      let pageBtn = node.querySelector("button") || node;
+      if (index === this.activePage) {
+        pageBtn.setAttribute("aria-current", "true");
+        node.classList.add(ACTIVECLASS);
+      } else {
+        pageBtn.removeAttribute("aria-current");
+        node.classList.remove(ACTIVECLASS);
+      }
+    });
+  }
+  this.nodes.items.forEach((nodes, index) => {
+    nodes.forEach((node, indexFirstItem) => {
+      const isActiveSlide = index === this.activePage;
+      if (isActiveSlide) {
+        node.removeAttribute("aria-hidden");
+        if (this.supportsInert) {
+          node.inert = false;
+        } else {
+          enableKeyboardNavigation(node);
+        }
+        this.visibleSlides.push(node);
+        if (this.focused && indexFirstItem === 0 && this.autoplayStatus !== "play") {
+          node.focus({ preventScroll: true });
+        }
+      } else {
+        node.setAttribute("aria-hidden", "true");
+        if (this.supportsInert) {
+          node.inert = true;
+        } else {
+          disableKeyboardNavigation(node);
+        }
+      }
+    });
+  });
+  updateScroll.call(this);
+  updateNavBtns.call(this);
+}
+function extend() {
+  const extended = {};
+  let deep = false;
+  let i = 0;
+  const length = arguments.length;
+  if (Object.prototype.toString.call(arguments[0]) === "[object Boolean]") {
+    deep = arguments[0];
+    i++;
+  }
+  const merge = function(obj) {
+    for (const prop in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+        if (deep && Object.prototype.toString.call(obj[prop]) === "[object Object]") {
+          extended[prop] = extend(true, extended[prop], obj[prop]);
+        } else {
+          extended[prop] = obj[prop];
+        }
       }
     }
   };
-  for (const [i, n] of Object.entries(s))
-    if (e.closest(`[${i}]`)) {
-      i !== `${r}-playstop` && this.stop(), n();
+  for (; i < length; i++) {
+    const obj = arguments[i];
+    merge(obj);
+  }
+  return extended;
+}
+function toJson(string) {
+  try {
+    return JSON.parse(string);
+  } catch (error) {
+    return {};
+  }
+}
+const DEFAULT = {
+  default: {
+    loop: true,
+    group: 1,
+    spaceAround: 0,
+    noStartSpace: false,
+    autoplay: 0
+  }
+};
+function getConfig(settings = {}) {
+  const getMqConfig = () => {
+    const updatedMqConfig = this.settings.responsive.slice().reverse().find(
+      (mqConfigs) => window.matchMedia(`(min-width: ${mqConfigs.minWidth})`).matches
+    );
+    return updatedMqConfig ? { ...this.settings.default, ...updatedMqConfig } : this.settings.default;
+  };
+  let timeout;
+  let checkDebounce = false;
+  const onMatchMedia = () => {
+    if (checkDebounce) return;
+    checkDebounce = true;
+    timeout = setTimeout(() => {
+      this.currentSettings = getMqConfig.call(this);
+      if (this.currentSettings.disable === true || this.currentSettings.disable === "auto" && this.currentSettings.group >= this.nodes.size) {
+        this.disable();
+      } else {
+        this.reinit();
+      }
+      checkDebounce = false;
+      clearTimeout(timeout);
+    }, 200);
+  };
+  const elSettings = toJson(this.el.getAttribute(ATTR));
+  this.settings = extend(true, {}, DEFAULT, settings, elSettings);
+  let config = this.settings.default;
+  if (this.settings.responsive) {
+    this.settings.responsive.sort(
+      (a, b) => parseInt(a.minWidth, 10) - parseInt(b.minWidth, 10)
+    );
+    config = getMqConfig.call(this);
+    this.settings.responsive.forEach((config2) => {
+      const mql = window.matchMedia(`(min-width: ${config2.minWidth})`);
+      mql.addEventListener("change", onMatchMedia.bind(this));
+    });
+  }
+  return config;
+}
+function getNodes() {
+  const nodes = {
+    paging: this.el.querySelector(`[${ATTRPAGING}]`),
+    prev: this.el.querySelector(`[${ATTRPREV}]`),
+    next: this.el.querySelector(`[${ATTRNEXT}]`),
+    playstop: this.el.querySelector(`[${ATTRPLAYSTOP}]`),
+    overflow: this.el.querySelector(`[${ATTROVERFLOW}]`),
+    wrapper: this.el.querySelector(`[${ATTRWRAPPER}]`),
+    items: [...this.el.querySelectorAll(`[${ATTRITEM}]`)]
+  };
+  nodes.size = nodes.items.length;
+  return nodes;
+}
+function getTemplates() {
+  const templates = {};
+  const createTemplate = (node, attr, keys) => {
+    var _a;
+    if (node) {
+      const labels = (_a = node.getAttribute(attr)) == null ? void 0 : _a.split("|");
+      if (labels && labels.length === keys.length) {
+        return {
+          tpl: node.innerHTML,
+          ...Object.fromEntries(keys.map((key, i) => [key, labels[i]]))
+        };
+      }
+    }
+    return null;
+  };
+  if (this.nodes) {
+    templates.playstop = createTemplate(this.nodes.playstop, ATTRPLAYSTOP, [
+      "playLabel",
+      "stopLabel"
+    ]);
+    templates.prev = createTemplate(this.nodes.prev, ATTRPREV, [
+      "label",
+      "lastLabel"
+    ]);
+    templates.next = createTemplate(this.nodes.next, ATTRNEXT, [
+      "label",
+      "lastLabel"
+    ]);
+    if (this.nodes.paging) {
+      templates.pagingTpl = this.nodes.paging.innerHTML;
+    }
+  }
+  return templates;
+}
+function onClick(ev) {
+  const targetNode = ev.target;
+  const actions = {
+    [`${ATTR}-playstop`]: () => this.toggleAutoplay(),
+    [`${ATTR}-prev`]: () => this.changeActive(this.activePage - 1),
+    [`${ATTR}-next`]: () => this.changeActive(this.activePage + 1),
+    [`${ATTR}-paging`]: () => {
+      const targetBtn = targetNode.closest(`[${ATTR}-paging] li`);
+      if (targetBtn) {
+        const newActive = this.nodes.pages.indexOf(targetBtn);
+        this.changeActive(newActive);
+      }
+    }
+  };
+  for (const [selector, action] of Object.entries(actions)) {
+    if (targetNode.closest(`[${selector}]`)) {
+      if (selector !== `${ATTR}-playstop`) {
+        this.stop();
+      }
+      action();
       break;
     }
+  }
 }
-function O(t) {
-  const s = {
+function onKeydown(event) {
+  const keyActions = {
     ArrowUp: () => this.changeActive(this.activePage - 1),
     ArrowLeft: () => this.changeActive(this.activePage - 1),
     ArrowDown: () => this.changeActive(this.activePage + 1),
     ArrowRight: () => this.changeActive(this.activePage + 1),
     Home: () => this.changeActive(0),
     End: () => this.changeActive(this.pagesLength - 1)
-  }[t.key];
-  s && (s(), t.preventDefault());
+  };
+  const action = keyActions[event.key];
+  if (action) {
+    action();
+    event.preventDefault();
+  }
 }
-const u = {
+const timeouts = {
   onTouchStart: null,
   onTouchMove: null,
   onTouchEnd: null
 };
-function d(t, e) {
-  u[t] && window.cancelAnimationFrame(u[t]), u[t] = window.requestAnimationFrame(e);
+function handleRequestAnimationFrame(type, callback) {
+  if (timeouts[type]) {
+    window.cancelAnimationFrame(timeouts[type]);
+  }
+  timeouts[type] = window.requestAnimationFrame(callback);
 }
-function N(t) {
-  d("onTouchStart", () => {
-    this.stop(), this.nodes.overflow.style.transition = "none", this._metrics.touchstartX = Math.round(t.touches[0].pageX), this._metrics.slideWidth = this.nodes.wrapper.offsetWidth;
+function onTouchStart(ev) {
+  handleRequestAnimationFrame("onTouchStart", () => {
+    this.stop();
+    this.nodes.overflow.style.transition = "none";
+    this._metrics.touchstartX = Math.round(ev.touches[0].pageX);
+    this._metrics.slideWidth = this.nodes.wrapper.offsetWidth;
   });
 }
-function F(t) {
-  d("onTouchMove", () => {
-    this._metrics.moveX = this._metrics.touchstartX - Math.round(t.touches[0].pageX), this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance - this._metrics.moveX}px)`;
+function onTouchMove(ev) {
+  handleRequestAnimationFrame("onTouchMove", () => {
+    this._metrics.moveX = this._metrics.touchstartX - Math.round(ev.touches[0].pageX);
+    this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance - this._metrics.moveX}px)`;
   });
 }
-function H() {
-  d("onTouchEnd", () => {
-    const t = this._metrics.moveX > this._metrics.slideWidth / 3, e = this._metrics.moveX < -this._metrics.slideWidth / 3;
-    this.nodes.overflow.style.transition = y;
-    let s = this.activePage;
-    if (this._metrics.moveX = 0, !t && !e) {
+function onTouchEnd() {
+  handleRequestAnimationFrame("onTouchEnd", () => {
+    const goToNext = this._metrics.moveX > this._metrics.slideWidth / 3;
+    const goToPrev = this._metrics.moveX < -this._metrics.slideWidth / 3;
+    this.nodes.overflow.style.transition = TRANSITION;
+    let newActive = this.activePage;
+    this._metrics.moveX = 0;
+    if (!goToNext && !goToPrev) {
       this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance}px)`;
       return;
     }
-    t ? s += 1 : s -= 1, this.changeActive(s, !0);
+    goToNext ? newActive += 1 : newActive -= 1;
+    this.changeActive(newActive, true);
   });
 }
-function A(t = !0) {
-  const e = t ? "addEventListener" : "removeEventListener", s = (n) => {
-    this.focused = !0, n.target.closest(`[${p}]`) ? this.play() : this.pause();
-  }, i = () => {
-    this.focused = !1, this.play.bind(this);
+function manageEvents(add = true) {
+  const method = add ? "addEventListener" : "removeEventListener";
+  const handleFocusIn = (event) => {
+    this.focused = true;
+    !event.target.closest(`[${ATTRPLAYSTOP}]`) ? this.pause() : this.play();
   };
-  ["touchstart", "touchmove", "touchend"].forEach((n, o) => {
-    const a = [N, F, H][o];
-    this.nodes.wrapper[e](n, a.bind(this));
-  }), this.el[e]("click", C.bind(this)), this.el[e]("keydown", O.bind(this)), this.el[e]("focusin", s), this.el[e]("focusout", i), this.el[e]("mouseenter", this.pause.bind(this)), this.el[e]("mouseleave", this.play.bind(this));
+  const handleFocusOut = () => {
+    this.focused = false;
+    this.play.bind(this);
+  };
+  ["touchstart", "touchmove", "touchend"].forEach((event, index) => {
+    const handler = [onTouchStart, onTouchMove, onTouchEnd][index];
+    this.nodes.wrapper[method](event, handler.bind(this));
+  });
+  this.el[method]("click", onClick.bind(this));
+  this.el[method]("keydown", onKeydown.bind(this));
+  this.el[method]("focusin", handleFocusIn);
+  this.el[method]("focusout", handleFocusOut);
+  this.el[method]("mouseenter", this.pause.bind(this));
+  this.el[method]("mouseleave", this.play.bind(this));
 }
-function k() {
-  A.call(this, !0);
+function addEvents() {
+  manageEvents.call(this, true);
 }
-function j() {
-  A.call(this, !1);
+function removeEvents() {
+  manageEvents.call(this, false);
 }
-const B = (() => {
-  const t = document.createElement("div");
-  return t.setAttribute("inert", ""), t.inert === !0;
+const supportsInert = (() => {
+  const testElement = document.createElement("div");
+  testElement.setAttribute("inert", "");
+  return testElement.inert === true;
 })();
-class D {
-  constructor(e, s) {
-    this.el = e, this.supportsInert = B, this.currentSettings = R.call(this, s), this.nodes = X.call(this), this._templates = W.call(this), k.call(this), this.currentSettings.disable || g.call(this);
+class Plugin {
+  constructor(el, settings) {
+    this.el = el;
+    this.supportsInert = supportsInert;
+    this.currentSettings = getConfig.call(this, settings);
+    this.nodes = getNodes.call(this);
+    this._templates = getTemplates.call(this);
+    addEvents.call(this);
+    if (!(this.currentSettings.disable === true || this.currentSettings.disable === "auto" && this.currentSettings.group >= this.nodes.size)) {
+      init.call(this);
+    }
   }
   play() {
-    if (!this.nodes.playstop || this.autoplayStatus === "stop")
+    if (!this.nodes.playstop || this.autoplayStatus === "stop") {
       return;
-    this.pause(), this.currentSettings.loop = !0, this.autoplayStatus = "play", this.nodes.playstop.classList.add("is-playing"), this.nodes.playstop.innerHTML = this._templates.playstop.tpl.replace(
+    }
+    this.pause();
+    this.currentSettings.loop = true;
+    this.autoplayStatus = "play";
+    this.nodes.playstop.classList.add("is-playing");
+    this.nodes.playstop.innerHTML = this._templates.playstop.tpl.replace(
       "{text}",
       this._templates.playstop.playLabel
     );
-    let e = this.activePage;
+    let newActive = this.activePage;
     this._interval = window.setInterval(() => {
-      e++, e > this.pagesLength - 1 && (e = 0), this.changeActive(e);
+      newActive++;
+      if (newActive > this.pagesLength - 1) {
+        newActive = 0;
+      }
+      this.changeActive(newActive);
     }, this.currentSettings.autoplay);
   }
   pause() {
     window.clearInterval(this._interval);
   }
   stop() {
-    this.nodes.playstop && (this.autoplayStatus = "stop", this.nodes.playstop.classList.remove("is-playing"), this.nodes.playstop.innerHTML = this._templates.playstop.tpl.replace(
+    if (!this.nodes.playstop) return;
+    this.autoplayStatus = "stop";
+    this.nodes.playstop.classList.remove("is-playing");
+    this.nodes.playstop.innerHTML = this._templates.playstop.tpl.replace(
       "{text}",
       this._templates.playstop.stopLabel
-    ), window.clearInterval(this._interval));
+    );
+    window.clearInterval(this._interval);
   }
   toggleAutoplay() {
-    this.nodes.playstop && (this.autoplayStatus === "play" ? this.stop() : this.autoplayStatus === "stop" && (this.autoplayStatus = "play", this.play()));
+    if (!this.nodes.playstop) return;
+    if (this.autoplayStatus === "play") {
+      this.stop();
+    } else if (this.autoplayStatus === "stop") {
+      this.autoplayStatus = "play";
+      this.play();
+    }
   }
-  changeActive(e, s) {
-    this.activePage = e, this.activePage < 0 && (this.activePage = this.currentSettings.loop && !s ? this.pagesLength - 1 : 0), this.activePage > this.pagesLength - 1 && (this.activePage = this.currentSettings.loop && !s ? 0 : this.pagesLength - 1), M.call(this);
+  changeActive(newActive, isSwipe) {
+    this.activePage = newActive;
+    if (this.activePage < 0) {
+      this.activePage = this.currentSettings.loop && !isSwipe ? this.pagesLength - 1 : 0;
+    }
+    if (this.activePage > this.pagesLength - 1) {
+      this.activePage = this.currentSettings.loop && !isSwipe ? 0 : this.pagesLength - 1;
+    }
+    setActive.call(this);
   }
   reinit() {
-    this.disable(), this.nodes.items = [...this.el.querySelectorAll(`[${f}]`)], g.call(this);
+    this.disable();
+    this.nodes.items = [...this.el.querySelectorAll(`[${ATTRITEM}]`)];
+    init.call(this);
   }
   disable() {
-    this.stop(), j.call(this), this.nodes.paging && (this.nodes.paging.hidden = !0), this.nodes.prev && (this.nodes.prev.hidden = !0), this.nodes.next && (this.nodes.next.hidden = !0), this.nodes.playstop && (this.nodes.playstop.hidden = !0), this.nodes.overflow.removeAttribute("style"), this.nodes.wrapper.removeAttribute("style"), this.nodes.items.forEach((e) => {
-      e == null || e.forEach((s) => {
-        s.removeAttribute("tabindex"), s.removeAttribute("aria-hidden"), s.removeAttribute("style");
-      });
-    }), this.el.classList.remove(c);
+    this.stop();
+    removeEvents.call(this);
+    if (this.nodes.paging) {
+      this.nodes.paging.hidden = true;
+    }
+    if (this.nodes.prev) {
+      this.nodes.prev.hidden = true;
+    }
+    if (this.nodes.next) {
+      this.nodes.next.hidden = true;
+    }
+    if (this.nodes.playstop) {
+      this.nodes.playstop.hidden = true;
+    }
+    this.nodes.overflow.removeAttribute("style");
+    this.nodes.wrapper.removeAttribute("style");
+    this.nodes.items.forEach((nodes) => {
+      if (Array.isArray(nodes)) {
+        nodes.forEach((node) => {
+          node.removeAttribute("tabindex");
+          node.removeAttribute("aria-hidden");
+          node.removeAttribute("style");
+        });
+      }
+    });
+    this.el.classList.remove(ACTIVECLASS);
   }
 }
-const V = (t, e) => {
-  !t.pmCarousel && t.hasAttribute(r) && (t.pmCarousel = new D(t, e));
-}, K = function(t = {}, e) {
-  e && (e = e instanceof NodeList ? [...e] : [e], e.forEach((s) => V(s, t)));
+const initPmCarousel = (node, settings) => {
+  if (!node.pmCarousel && node.hasAttribute(ATTR)) {
+    node.pmCarousel = new Plugin(node, settings);
+  }
 };
-window.pmCarousel = K;
+const pmCarousel = function(settings = {}, nodes) {
+  if (!nodes) return;
+  nodes = nodes instanceof NodeList ? [...nodes] : [nodes];
+  nodes.forEach((node) => initPmCarousel(node, settings));
+};
+window.pmCarousel = pmCarousel;
 export {
-  K as default
+  pmCarousel as default
 };
