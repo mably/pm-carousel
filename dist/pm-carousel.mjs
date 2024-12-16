@@ -280,7 +280,7 @@ class D {
     this.disable(), this.nodes.items = [...this.el.querySelectorAll(`[${f}]`)], g.call(this);
   }
   disable() {
-    this.stop(), j.call(this), this.nodes.paging.hidden = !0, this.nodes.prev.hidden = !0, this.nodes.next.hidden = !0, this.nodes.playstop.hidden = !0, this.nodes.overflow.removeAttribute("style"), this.nodes.wrapper.removeAttribute("style"), this.nodes.items.forEach((e) => {
+    this.stop(), j.call(this), this.nodes.paging && (this.nodes.paging.hidden = !0), this.nodes.prev && (this.nodes.prev.hidden = !0), this.nodes.next && (this.nodes.next.hidden = !0), this.nodes.playstop && (this.nodes.playstop.hidden = !0), this.nodes.overflow.removeAttribute("style"), this.nodes.wrapper.removeAttribute("style"), this.nodes.items.forEach((e) => {
       e == null || e.forEach((s) => {
         s.removeAttribute("tabindex"), s.removeAttribute("aria-hidden"), s.removeAttribute("style");
       });
