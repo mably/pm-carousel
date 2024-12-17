@@ -1,10 +1,10 @@
-const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-overflow`, p = `${r}-item`, m = `${r}-prev`, v = `${r}-next`, d = `${r}-playstop`, y = "transform .5s ease-in-out", c = "is-active", E = {
+const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-overflow`, f = `${r}-item`, m = `${r}-prev`, v = `${r}-next`, p = `${r}-playstop`, b = "transform .5s ease-in-out", c = "is-active", E = {
   playstop: function() {
     this.nodes.playstop && (this.nodes.playstop.hidden = !this.currentSettings.autoplay);
   },
   wrapper: function() {
     const t = this.currentSettings.noStartSpace ? 0 : this.currentSettings.spaceAround;
-    this.nodes.overflow.style.transform = `translateX(${this.activePage * -100 + t}%)`, this.currentSettings.noStartSpace ? this.nodes.overflow.style.paddingRight = this.currentSettings.spaceAround + "%" : (this.nodes.overflow.style.paddingRight = t + "%", this.nodes.overflow.style.paddingLeft = t + "%"), this.nodes.overflow.style.transition = y, this.nodes.overflow.style.display = "flex", this.nodes.wrapper.style.overflow = "hidden", this.el.classList.add(c);
+    this.nodes.overflow.style.transform = `translateX(${this.activePage * -100 + t}%)`, this.currentSettings.noStartSpace ? this.nodes.overflow.style.paddingRight = this.currentSettings.spaceAround + "%" : (this.nodes.overflow.style.paddingRight = t + "%", this.nodes.overflow.style.paddingLeft = t + "%"), this.nodes.overflow.style.transition = b, this.nodes.overflow.style.display = "flex", this.nodes.wrapper.style.overflow = "hidden", this.el.classList.add(c);
   },
   slides: function() {
     const t = [];
@@ -26,7 +26,7 @@ const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-o
 function L() {
   ["slides", "wrapper", "playstop", "paging"].forEach((e) => E[e].call(this));
 }
-function f() {
+function g() {
   this.activePage = 0, this._interval = null, this.autoplayStatus = "stop", this._metrics = {
     touchstartX: 0,
     touchmoveX: 0,
@@ -77,14 +77,14 @@ function M() {
     });
   }), P.call(this), x.call(this);
 }
-function b() {
+function y() {
   const t = {};
   let e = !1, s = 0;
   const i = arguments.length;
   Object.prototype.toString.call(arguments[0]) === "[object Boolean]" && (e = arguments[0], s++);
   const n = function(o) {
     for (const a in o)
-      Object.prototype.hasOwnProperty.call(o, a) && (e && Object.prototype.toString.call(o[a]) === "[object Object]" ? t[a] = b(!0, t[a], o[a]) : t[a] = o[a]);
+      Object.prototype.hasOwnProperty.call(o, a) && (e && Object.prototype.toString.call(o[a]) === "[object Object]" ? t[a] = y(!0, t[a], o[a]) : t[a] = o[a]);
   };
   for (; s < i; s++) {
     const o = arguments[s];
@@ -92,14 +92,14 @@ function b() {
   }
   return t;
 }
-function q(t) {
+function I(t) {
   try {
     return JSON.parse(t);
   } catch {
     return {};
   }
 }
-const I = {
+const R = {
   default: {
     loop: !0,
     group: 1,
@@ -108,7 +108,7 @@ const I = {
     autoplay: 0
   }
 };
-function R(t = {}) {
+function q(t = {}) {
   const e = () => {
     const l = this.settings.responsive.slice().reverse().find(
       (h) => window.matchMedia(`(min-width: ${h.minWidth})`).matches
@@ -118,10 +118,10 @@ function R(t = {}) {
   let s, i = !1;
   const n = () => {
     i || (i = !0, s = setTimeout(() => {
-      this.currentSettings = e.call(this), typeof this.currentSettings.disable == "string" && this.currentSettings.disable === "auto" ? this.currentSettings.group && this.nodes.itemsNumber <= this.currentSettings.group ? this.disable() : this.reinit() : this.currentSettings.disable ? this.disable() : this.reinit(), i = !1, clearTimeout(s);
+      this.currentSettings = e.call(this), typeof this.currentSettings.disable == "string" && this.currentSettings.disable === "auto" ? this.currentSettings.group && this.nodes.itemsNumber <= this.currentSettings.group ? this.disable() : this.reinit() : typeof this.currentSettings.disable == "boolean" && (this.currentSettings.disable ? this.disable() : this.reinit()), i = !1, clearTimeout(s);
     }, 200));
-  }, o = q(this.el.getAttribute(r));
-  this.settings = b(!0, {}, I, t, o);
+  }, o = I(this.el.getAttribute(r));
+  this.settings = y(!0, {}, R, t, o);
   let a = this.settings.default;
   return this.settings.responsive && (this.settings.responsive.sort(
     (l, h) => parseInt(l.minWidth, 10) - parseInt(h.minWidth, 10)
@@ -130,16 +130,16 @@ function R(t = {}) {
   })), a;
 }
 function X() {
-  return {
+  const t = {
     paging: this.el.querySelector(`[${S}]`),
     prev: this.el.querySelector(`[${m}]`),
     next: this.el.querySelector(`[${v}]`),
-    playstop: this.el.querySelector(`[${d}]`),
+    playstop: this.el.querySelector(`[${p}]`),
     overflow: this.el.querySelector(`[${T}]`),
     wrapper: this.el.querySelector(`[${w}]`),
-    items: [...this.el.querySelectorAll(`[${p}]`)],
-    itemsNumber: [...this.el.querySelectorAll(`[${p}]`)].length
+    items: [...this.el.querySelectorAll(`[${f}]`)]
   };
+  return t.itemsNumber = t.items.length, t;
 }
 function W() {
   const t = {}, e = (s, i, n) => {
@@ -154,7 +154,7 @@ function W() {
     }
     return null;
   };
-  return this.nodes && (t.playstop = e(this.nodes.playstop, d, [
+  return this.nodes && (t.playstop = e(this.nodes.playstop, p, [
     "playLabel",
     "stopLabel"
   ]), t.prev = e(this.nodes.prev, m, [
@@ -200,23 +200,23 @@ const u = {
   onTouchMove: null,
   onTouchEnd: null
 };
-function g(t, e) {
+function d(t, e) {
   u[t] && window.cancelAnimationFrame(u[t]), u[t] = window.requestAnimationFrame(e);
 }
 function O(t) {
-  g("onTouchStart", () => {
+  d("onTouchStart", () => {
     this.stop(), this.nodes.overflow.style.transition = "none", this._metrics.touchstartX = Math.round(t.touches[0].pageX), this._metrics.slideWidth = this.nodes.wrapper.offsetWidth;
   });
 }
 function F(t) {
-  g("onTouchMove", () => {
+  d("onTouchMove", () => {
     this._metrics.moveX = this._metrics.touchstartX - Math.round(t.touches[0].pageX), this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance - this._metrics.moveX}px)`;
   });
 }
 function H() {
-  g("onTouchEnd", () => {
+  d("onTouchEnd", () => {
     const t = this._metrics.moveX > this._metrics.slideWidth / 3, e = this._metrics.moveX < -this._metrics.slideWidth / 3;
-    this.nodes.overflow.style.transition = y;
+    this.nodes.overflow.style.transition = b;
     let s = this.activePage;
     if (this._metrics.moveX = 0, !t && !e) {
       this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance}px)`;
@@ -227,7 +227,7 @@ function H() {
 }
 function A(t = !0) {
   const e = t ? "addEventListener" : "removeEventListener", s = (n) => {
-    this.focused = !0, n.target.closest(`[${d}]`) ? this.play() : this.pause();
+    this.focused = !0, n.target.closest(`[${p}]`) ? this.play() : this.pause();
   }, i = () => {
     this.focused = !1, this.play.bind(this);
   };
@@ -248,7 +248,9 @@ const B = (() => {
 })();
 class D {
   constructor(e, s) {
-    this.el = e, this.supportsInert = B, this.currentSettings = R.call(this, s), this.nodes = X.call(this), this._templates = W.call(this), k.call(this), (!this.currentSettings.disable || this.currentSettings.disable === "auto") && f.call(this);
+    this.el = e, this.supportsInert = B, this.currentSettings = q.call(this, s), this.nodes = X.call(this), this._templates = W.call(this), k.call(this);
+    const i = typeof this.currentSettings.disable == "boolean" && !this.currentSettings.disable || typeof this.currentSettings.disable == "string" && this.currentSettings.disable === "auto";
+    this.nodes.itemsNumber > 1 && i && g.call(this);
   }
   play() {
     if (!this.nodes.playstop || this.autoplayStatus === "stop")
@@ -278,7 +280,7 @@ class D {
     this.activePage = e, this.activePage < 0 && (this.activePage = this.currentSettings.loop && !s ? this.pagesLength - 1 : 0), this.activePage > this.pagesLength - 1 && (this.activePage = this.currentSettings.loop && !s ? 0 : this.pagesLength - 1), M.call(this);
   }
   reinit() {
-    this.disable(), this.nodes.items = [...this.el.querySelectorAll(`[${p}]`)], f.call(this);
+    this.disable(), this.nodes.items = [...this.el.querySelectorAll(`[${f}]`)], g.call(this);
   }
   disable() {
     this.stop(), j.call(this), this.nodes.paging && (this.nodes.paging.hidden = !0), this.nodes.prev && (this.nodes.prev.hidden = !0), this.nodes.next && (this.nodes.next.hidden = !0), this.nodes.playstop && (this.nodes.playstop.hidden = !0), this.nodes.overflow.removeAttribute("style"), this.nodes.wrapper.removeAttribute("style"), this.nodes.items.forEach((e) => {

@@ -42,11 +42,11 @@ function getConfig(settings = {}) {
 
 			if (
 				typeof this.currentSettings.disable === "string" &&
-				this.currentSettings.disable === 'auto'
+				this.currentSettings.disable === "auto"
 			) {
 				this.currentSettings.group && this.nodes.itemsNumber <= this.currentSettings.group ? this.disable() : this.reinit()
 			}
-			else {
+			else if (typeof this.currentSettings.disable === "boolean") {
 				this.currentSettings.disable ? this.disable() : this.reinit()
 			}
 
