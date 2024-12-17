@@ -26,7 +26,10 @@ class Plugin {
 
 		addEvents.call(this)
 
-		if (!this.currentSettings.disable) {
+		if (
+			!this.currentSettings.disable ||
+			this.currentSettings.disable === 'auto'
+		) {
 			init.call(this)
 		}
 	}

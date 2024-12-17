@@ -17,6 +17,7 @@ function getNodes() {
 		overflow: this.el.querySelector(`[${ATTROVERFLOW}]`),
 		wrapper: this.el.querySelector(`[${ATTRWRAPPER}]`),
 		items: [...this.el.querySelectorAll(`[${ATTRITEM}]`)],
+		itemsNumber: [...this.el.querySelectorAll(`[${ATTRITEM}]`)].length,
 	}
 }
 

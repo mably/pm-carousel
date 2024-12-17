@@ -1,4 +1,4 @@
-const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-overflow`, f = `${r}-item`, m = `${r}-prev`, v = `${r}-next`, p = `${r}-playstop`, y = "transform .5s ease-in-out", c = "is-active", E = {
+const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-overflow`, p = `${r}-item`, m = `${r}-prev`, v = `${r}-next`, d = `${r}-playstop`, y = "transform .5s ease-in-out", c = "is-active", E = {
   playstop: function() {
     this.nodes.playstop && (this.nodes.playstop.hidden = !this.currentSettings.autoplay);
   },
@@ -26,7 +26,7 @@ const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-o
 function L() {
   ["slides", "wrapper", "playstop", "paging"].forEach((e) => E[e].call(this));
 }
-function g() {
+function f() {
   this.activePage = 0, this._interval = null, this.autoplayStatus = "stop", this._metrics = {
     touchstartX: 0,
     touchmoveX: 0,
@@ -118,7 +118,7 @@ function R(t = {}) {
   let s, i = !1;
   const n = () => {
     i || (i = !0, s = setTimeout(() => {
-      this.currentSettings = e.call(this), this.currentSettings.disable ? this.disable() : this.reinit(), i = !1, clearTimeout(s);
+      this.currentSettings = e.call(this), typeof this.currentSettings.disable == "string" && this.currentSettings.disable === "auto" ? this.currentSettings.group && this.nodes.itemsNumber <= this.currentSettings.group ? this.disable() : this.reinit() : this.currentSettings.disable ? this.disable() : this.reinit(), i = !1, clearTimeout(s);
     }, 200));
   }, o = q(this.el.getAttribute(r));
   this.settings = b(!0, {}, I, t, o);
@@ -134,10 +134,11 @@ function X() {
     paging: this.el.querySelector(`[${S}]`),
     prev: this.el.querySelector(`[${m}]`),
     next: this.el.querySelector(`[${v}]`),
-    playstop: this.el.querySelector(`[${p}]`),
+    playstop: this.el.querySelector(`[${d}]`),
     overflow: this.el.querySelector(`[${T}]`),
     wrapper: this.el.querySelector(`[${w}]`),
-    items: [...this.el.querySelectorAll(`[${f}]`)]
+    items: [...this.el.querySelectorAll(`[${p}]`)],
+    itemsNumber: [...this.el.querySelectorAll(`[${p}]`)].length
   };
 }
 function W() {
@@ -153,7 +154,7 @@ function W() {
     }
     return null;
   };
-  return this.nodes && (t.playstop = e(this.nodes.playstop, p, [
+  return this.nodes && (t.playstop = e(this.nodes.playstop, d, [
     "playLabel",
     "stopLabel"
   ]), t.prev = e(this.nodes.prev, m, [
@@ -183,7 +184,7 @@ function C(t) {
       break;
     }
 }
-function O(t) {
+function N(t) {
   const s = {
     ArrowUp: () => this.changeActive(this.activePage - 1),
     ArrowLeft: () => this.changeActive(this.activePage - 1),
@@ -199,21 +200,21 @@ const u = {
   onTouchMove: null,
   onTouchEnd: null
 };
-function d(t, e) {
+function g(t, e) {
   u[t] && window.cancelAnimationFrame(u[t]), u[t] = window.requestAnimationFrame(e);
 }
-function N(t) {
-  d("onTouchStart", () => {
+function O(t) {
+  g("onTouchStart", () => {
     this.stop(), this.nodes.overflow.style.transition = "none", this._metrics.touchstartX = Math.round(t.touches[0].pageX), this._metrics.slideWidth = this.nodes.wrapper.offsetWidth;
   });
 }
 function F(t) {
-  d("onTouchMove", () => {
+  g("onTouchMove", () => {
     this._metrics.moveX = this._metrics.touchstartX - Math.round(t.touches[0].pageX), this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance - this._metrics.moveX}px)`;
   });
 }
 function H() {
-  d("onTouchEnd", () => {
+  g("onTouchEnd", () => {
     const t = this._metrics.moveX > this._metrics.slideWidth / 3, e = this._metrics.moveX < -this._metrics.slideWidth / 3;
     this.nodes.overflow.style.transition = y;
     let s = this.activePage;
@@ -226,14 +227,14 @@ function H() {
 }
 function A(t = !0) {
   const e = t ? "addEventListener" : "removeEventListener", s = (n) => {
-    this.focused = !0, n.target.closest(`[${p}]`) ? this.play() : this.pause();
+    this.focused = !0, n.target.closest(`[${d}]`) ? this.play() : this.pause();
   }, i = () => {
     this.focused = !1, this.play.bind(this);
   };
   ["touchstart", "touchmove", "touchend"].forEach((n, o) => {
-    const a = [N, F, H][o];
+    const a = [O, F, H][o];
     this.nodes.wrapper[e](n, a.bind(this));
-  }), this.el[e]("click", C.bind(this)), this.el[e]("keydown", O.bind(this)), this.el[e]("focusin", s), this.el[e]("focusout", i), this.el[e]("mouseenter", this.pause.bind(this)), this.el[e]("mouseleave", this.play.bind(this));
+  }), this.el[e]("click", C.bind(this)), this.el[e]("keydown", N.bind(this)), this.el[e]("focusin", s), this.el[e]("focusout", i), this.el[e]("mouseenter", this.pause.bind(this)), this.el[e]("mouseleave", this.play.bind(this));
 }
 function k() {
   A.call(this, !0);
@@ -247,7 +248,7 @@ const B = (() => {
 })();
 class D {
   constructor(e, s) {
-    this.el = e, this.supportsInert = B, this.currentSettings = R.call(this, s), this.nodes = X.call(this), this._templates = W.call(this), k.call(this), this.currentSettings.disable || g.call(this);
+    this.el = e, this.supportsInert = B, this.currentSettings = R.call(this, s), this.nodes = X.call(this), this._templates = W.call(this), k.call(this), (!this.currentSettings.disable || this.currentSettings.disable === "auto") && f.call(this);
   }
   play() {
     if (!this.nodes.playstop || this.autoplayStatus === "stop")
@@ -277,7 +278,7 @@ class D {
     this.activePage = e, this.activePage < 0 && (this.activePage = this.currentSettings.loop && !s ? this.pagesLength - 1 : 0), this.activePage > this.pagesLength - 1 && (this.activePage = this.currentSettings.loop && !s ? 0 : this.pagesLength - 1), M.call(this);
   }
   reinit() {
-    this.disable(), this.nodes.items = [...this.el.querySelectorAll(`[${f}]`)], g.call(this);
+    this.disable(), this.nodes.items = [...this.el.querySelectorAll(`[${p}]`)], f.call(this);
   }
   disable() {
     this.stop(), j.call(this), this.nodes.paging && (this.nodes.paging.hidden = !0), this.nodes.prev && (this.nodes.prev.hidden = !0), this.nodes.next && (this.nodes.next.hidden = !0), this.nodes.playstop && (this.nodes.playstop.hidden = !0), this.nodes.overflow.removeAttribute("style"), this.nodes.wrapper.removeAttribute("style"), this.nodes.items.forEach((e) => {
