@@ -40,13 +40,10 @@ function getConfig(settings = {}) {
 		timeout = setTimeout(() => {
 			this.currentSettings = getMqConfig.call(this)
 
-			if (
-				typeof this.currentSettings.disable === "string" &&
-				this.currentSettings.disable === "auto"
-			) {
+			if (this.currentSettings.disable == "auto") {
 				this.currentSettings.group && this.nodes.itemsNumber <= this.currentSettings.group ? this.disable() : this.reinit()
 			}
-			else if (typeof this.currentSettings.disable === "boolean") {
+			else {
 				this.currentSettings.disable ? this.disable() : this.reinit()
 			}
 

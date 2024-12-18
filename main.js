@@ -26,13 +26,12 @@ class Plugin {
 
 		addEvents.call(this)
 
-		const canInit = (typeof this.currentSettings.disable === 'boolean' && !this.currentSettings.disable) ||
-			(typeof this.currentSettings.disable === 'string' && this.currentSettings.disable === 'auto')
+		let canInit = !this.currentSettings.disable
+		if (this.currentSettings.disable == "auto") {
+			canInit = this.nodes.itemsNumber > this.currentSettings.group
+		}
 
-		if (
-			this.nodes.itemsNumber > 1 &&
-			canInit
-		) {
+		if (canInit) {
 			init.call(this)
 		}
 	}

@@ -1,10 +1,10 @@
-const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-overflow`, f = `${r}-item`, m = `${r}-prev`, v = `${r}-next`, p = `${r}-playstop`, b = "transform .5s ease-in-out", c = "is-active", E = {
+const r = "data-pm-carousel", S = `${r}-paging`, w = `${r}-wrapper`, T = `${r}-overflow`, f = `${r}-item`, m = `${r}-prev`, v = `${r}-next`, p = `${r}-playstop`, y = "transform .5s ease-in-out", c = "is-active", E = {
   playstop: function() {
     this.nodes.playstop && (this.nodes.playstop.hidden = !this.currentSettings.autoplay);
   },
   wrapper: function() {
     const t = this.currentSettings.noStartSpace ? 0 : this.currentSettings.spaceAround;
-    this.nodes.overflow.style.transform = `translateX(${this.activePage * -100 + t}%)`, this.currentSettings.noStartSpace ? this.nodes.overflow.style.paddingRight = this.currentSettings.spaceAround + "%" : (this.nodes.overflow.style.paddingRight = t + "%", this.nodes.overflow.style.paddingLeft = t + "%"), this.nodes.overflow.style.transition = b, this.nodes.overflow.style.display = "flex", this.nodes.wrapper.style.overflow = "hidden", this.el.classList.add(c);
+    this.nodes.overflow.style.transform = `translateX(${this.activePage * -100 + t}%)`, this.currentSettings.noStartSpace ? this.nodes.overflow.style.paddingRight = this.currentSettings.spaceAround + "%" : (this.nodes.overflow.style.paddingRight = t + "%", this.nodes.overflow.style.paddingLeft = t + "%"), this.nodes.overflow.style.transition = y, this.nodes.overflow.style.display = "flex", this.nodes.wrapper.style.overflow = "hidden", this.el.classList.add(c);
   },
   slides: function() {
     const t = [];
@@ -77,14 +77,14 @@ function M() {
     });
   }), P.call(this), x.call(this);
 }
-function y() {
+function b() {
   const t = {};
   let e = !1, s = 0;
   const i = arguments.length;
   Object.prototype.toString.call(arguments[0]) === "[object Boolean]" && (e = arguments[0], s++);
   const n = function(o) {
     for (const a in o)
-      Object.prototype.hasOwnProperty.call(o, a) && (e && Object.prototype.toString.call(o[a]) === "[object Object]" ? t[a] = y(!0, t[a], o[a]) : t[a] = o[a]);
+      Object.prototype.hasOwnProperty.call(o, a) && (e && Object.prototype.toString.call(o[a]) === "[object Object]" ? t[a] = b(!0, t[a], o[a]) : t[a] = o[a]);
   };
   for (; s < i; s++) {
     const o = arguments[s];
@@ -99,7 +99,7 @@ function I(t) {
     return {};
   }
 }
-const R = {
+const q = {
   default: {
     loop: !0,
     group: 1,
@@ -108,7 +108,7 @@ const R = {
     autoplay: 0
   }
 };
-function q(t = {}) {
+function R(t = {}) {
   const e = () => {
     const l = this.settings.responsive.slice().reverse().find(
       (h) => window.matchMedia(`(min-width: ${h.minWidth})`).matches
@@ -118,10 +118,10 @@ function q(t = {}) {
   let s, i = !1;
   const n = () => {
     i || (i = !0, s = setTimeout(() => {
-      this.currentSettings = e.call(this), typeof this.currentSettings.disable == "string" && this.currentSettings.disable === "auto" ? this.currentSettings.group && this.nodes.itemsNumber <= this.currentSettings.group ? this.disable() : this.reinit() : typeof this.currentSettings.disable == "boolean" && (this.currentSettings.disable ? this.disable() : this.reinit()), i = !1, clearTimeout(s);
+      this.currentSettings = e.call(this), this.currentSettings.disable == "auto" ? this.currentSettings.group && this.nodes.itemsNumber <= this.currentSettings.group ? this.disable() : this.reinit() : this.currentSettings.disable ? this.disable() : this.reinit(), i = !1, clearTimeout(s);
     }, 200));
   }, o = I(this.el.getAttribute(r));
-  this.settings = y(!0, {}, R, t, o);
+  this.settings = b(!0, {}, q, t, o);
   let a = this.settings.default;
   return this.settings.responsive && (this.settings.responsive.sort(
     (l, h) => parseInt(l.minWidth, 10) - parseInt(h.minWidth, 10)
@@ -216,7 +216,7 @@ function F(t) {
 function H() {
   d("onTouchEnd", () => {
     const t = this._metrics.moveX > this._metrics.slideWidth / 3, e = this._metrics.moveX < -this._metrics.slideWidth / 3;
-    this.nodes.overflow.style.transition = b;
+    this.nodes.overflow.style.transition = y;
     let s = this.activePage;
     if (this._metrics.moveX = 0, !t && !e) {
       this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance}px)`;
@@ -248,9 +248,9 @@ const B = (() => {
 })();
 class D {
   constructor(e, s) {
-    this.el = e, this.supportsInert = B, this.currentSettings = q.call(this, s), this.nodes = X.call(this), this._templates = W.call(this), k.call(this);
-    const i = typeof this.currentSettings.disable == "boolean" && !this.currentSettings.disable || typeof this.currentSettings.disable == "string" && this.currentSettings.disable === "auto";
-    this.nodes.itemsNumber > 1 && i && g.call(this);
+    this.el = e, this.supportsInert = B, this.currentSettings = R.call(this, s), this.nodes = X.call(this), this._templates = W.call(this), k.call(this);
+    let i = !this.currentSettings.disable;
+    this.currentSettings.disable == "auto" && (i = this.nodes.itemsNumber > this.currentSettings.group), i && g.call(this);
   }
   play() {
     if (!this.nodes.playstop || this.autoplayStatus === "stop")
