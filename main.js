@@ -26,7 +26,13 @@ class Plugin {
 
 		addEvents.call(this)
 
-		if (!this.currentSettings.disable) {
+		if (
+			!(
+				this.currentSettings.disable === true ||
+				(this.currentSettings.disable === "auto" &&
+					this.currentSettings.group >= this.nodes.size)
+			)
+		) {
 			init.call(this)
 		}
 	}
@@ -136,11 +142,14 @@ class Plugin {
 		this.nodes.wrapper.removeAttribute("style")
 
 		this.nodes.items.forEach((nodes) => {
-			nodes?.forEach((node) => {
-				node.removeAttribute("tabindex")
-				node.removeAttribute("aria-hidden")
-				node.removeAttribute("style")
-			})
+			// Items may have not been initialized yet.
+			if (Array.isArray(nodes)) {
+				nodes.forEach((node) => {
+					node.removeAttribute("tabindex")
+					node.removeAttribute("aria-hidden")
+					node.removeAttribute("style")
+				})
+			}
 		})
 
 		this.el.classList.remove(ACTIVECLASS)

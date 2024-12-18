@@ -39,8 +39,15 @@ function getConfig(settings = {}) {
 
 		timeout = setTimeout(() => {
 			this.currentSettings = getMqConfig.call(this)
-
-			this.currentSettings.disable ? this.disable() : this.reinit()
+			if (
+				this.currentSettings.disable === true ||
+				(this.currentSettings.disable === "auto" &&
+					this.currentSettings.group >= this.nodes.size)
+			) {
+				this.disable()
+			} else {
+				this.reinit()
+			}
 
 			checkDebounce = false
 			clearTimeout(timeout)

@@ -9,7 +9,7 @@ import {
 } from "./constants"
 
 function getNodes() {
-	return {
+	const nodes = {
 		paging: this.el.querySelector(`[${ATTRPAGING}]`),
 		prev: this.el.querySelector(`[${ATTRPREV}]`),
 		next: this.el.querySelector(`[${ATTRNEXT}]`),
@@ -18,6 +18,8 @@ function getNodes() {
 		wrapper: this.el.querySelector(`[${ATTRWRAPPER}]`),
 		items: [...this.el.querySelectorAll(`[${ATTRITEM}]`)],
 	}
+	nodes.size = nodes.items.length
+	return nodes
 }
 
 export default getNodes
