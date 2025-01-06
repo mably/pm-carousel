@@ -1,4 +1,10 @@
 {
     "name": "mably/pm-carousel",
-    "type": "drupal-library"
+    "description": "Mirror of the pm-carousel javascript library tagged as a Drupal library (patched).",
+    "type": "drupal-library",
+    "homepage": "https://github.com/lordfpx/pm-carousel",
+    "license": "GPL-3.0-or-later",
+    "extra": {
+        "installer-name": "pm-carousel"
+    }
 }
