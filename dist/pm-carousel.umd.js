@@ -11,7 +11,9 @@
   const ATTRNEXT = `${ATTR}-next`;
   const ATTRPLAYSTOP = `${ATTR}-playstop`;
   const TRANSITION = "transform .5s ease-in-out";
+  const TRANSITION_SWIPE = "transform .1s ease-out";
   const ACTIVECLASS = "is-active";
+  const SLIDE_MIN_RATIO = 6;
   const buildActions = {
     playstop: function() {
       if (!this.nodes.playstop) return;
@@ -368,23 +370,43 @@
       this.stop();
       this.nodes.overflow.style.transition = "none";
       this._metrics.touchstartX = Math.round(ev.touches[0].pageX);
+      this._metrics.touchstartY = Math.round(ev.touches[0].pageY);
       this._metrics.slideWidth = this.nodes.wrapper.offsetWidth;
+      this._metrics.isScrolling = false;
+      this._metrics.isSwiping = false;
     });
   }
   function onTouchMove(ev) {
     handleRequestAnimationFrame("onTouchMove", () => {
       this._metrics.moveX = this._metrics.touchstartX - Math.round(ev.touches[0].pageX);
-      this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance - this._metrics.moveX}px)`;
+      this._metrics.moveY = this._metrics.touchstartY - Math.round(ev.touches[0].pageY);
+      if (!this._metrics.isScrolling && !this._metrics.isSwiping) {
+        if (Math.abs(this._metrics.moveX) > Math.abs(this._metrics.moveY)) {
+          this._metrics.isSwiping = true;
+        } else {
+          this._metrics.isScrolling = true;
+        }
+      }
+      if (this._metrics.isSwiping) {
+        document.documentElement.style.overflow = "hidden";
+        this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance - this._metrics.moveX}px)`;
+      }
     });
   }
   function onTouchEnd() {
     handleRequestAnimationFrame("onTouchEnd", () => {
-      const goToNext = this._metrics.moveX > this._metrics.slideWidth / 3;
-      const goToPrev = this._metrics.moveX < -this._metrics.slideWidth / 3;
-      this.nodes.overflow.style.transition = TRANSITION;
+      if (!this._metrics.isSwiping) {
+        return;
+      }
+      const goToNext = this._metrics.moveX > this._metrics.slideWidth / SLIDE_MIN_RATIO;
+      const goToPrev = this._metrics.moveX < -this._metrics.slideWidth / SLIDE_MIN_RATIO;
+      document.documentElement.style.removeProperty("overflow");
       let newActive = this.activePage;
       this._metrics.moveX = 0;
+      this._metrics.isScrolling = false;
+      this._metrics.isSwiping = false;
       if (!goToNext && !goToPrev) {
+        this.nodes.overflow.style.transition = TRANSITION;
         this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance}px)`;
         return;
       }
@@ -486,6 +508,11 @@
       }
       if (this.activePage > this.pagesLength - 1) {
         this.activePage = this.currentSettings.loop && !isSwipe ? 0 : this.pagesLength - 1;
+      }
+      if (isSwipe) {
+        this.nodes.overflow.style.transition = TRANSITION_SWIPE;
+      } else {
+        this.nodes.overflow.style.transition = TRANSITION;
       }
       setActive.call(this);
     }
