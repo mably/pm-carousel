@@ -1,4 +1,10 @@
-import { ATTR, ACTIVECLASS, ATTRITEM } from "./src/constants"
+import {
+	ATTR,
+	ACTIVECLASS,
+	ATTRITEM,
+	TRANSITION,
+	TRANSITION_SWIPE,
+} from "./src/constants"
 
 import init from "./src/init"
 import setActive from "./src/setActive"
@@ -107,6 +113,12 @@ class Plugin {
 		if (this.activePage > this.pagesLength - 1) {
 			this.activePage =
 				this.currentSettings.loop && !isSwipe ? 0 : this.pagesLength - 1
+		}
+
+		if (isSwipe) {
+			this.nodes.overflow.style.transition = TRANSITION_SWIPE
+		} else {
+			this.nodes.overflow.style.transition = TRANSITION
 		}
 
 		setActive.call(this)
