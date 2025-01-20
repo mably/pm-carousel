@@ -19,8 +19,8 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build && vite preview",
-		"build:main": "vite build --base=/pm-carousel/ && vite build -c vite.config.build.js && git add .",
-		"prerelease": "npm run build:main",
+		"build:main": "vite build --base=/pm-carousel/ && vite build -c vite.config.build.js",
+		"prerelease": "npm run build:main && git add .",
 		"release": "commit-and-tag-version"
 	},
 	"devDependencies": {
