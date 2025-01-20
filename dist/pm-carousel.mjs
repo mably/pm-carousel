@@ -84,7 +84,7 @@ function init() {
 function updateScroll() {
   this._metrics.slideWidth = this.visibleSlides[0].offsetWidth * this.currentSettings.group;
   this._metrics.distance = this.activePage * this._metrics.slideWidth;
-  if (this.activePage === this.pagesLength - 1) {
+  if (!this.currentSettings.allowIncompleteLastPage && this.activePage === this.pagesLength - 1) {
     this._metrics.distance = this.nodes.overflow.scrollWidth - this._metrics.slideWidth;
     if (this.currentSettings.spaceAround) {
       this._metrics.distance -= parseInt(
@@ -220,7 +220,8 @@ const DEFAULT = {
     group: 1,
     spaceAround: 0,
     noStartSpace: false,
-    autoplay: 0
+    autoplay: 0,
+    allowIncompleteLastPage: false
   }
 };
 function getConfig(settings = {}) {
