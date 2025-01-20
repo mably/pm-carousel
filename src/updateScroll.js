@@ -1,10 +1,14 @@
 export function updateScroll() {
 	this._metrics.slideWidth =
-		this.visibleSlides[0].offsetWidth * this.currentSettings.group
+		(this.nodes.overflow.scrollWidth / this.nodes.size) *
+		this.currentSettings.group
 	this._metrics.distance = this.activePage * this._metrics.slideWidth
 
 	// last slide
-	if (!this.currentSettings.allowIncompleteLastPage && this.activePage === this.pagesLength - 1) {
+	if (
+		!this.currentSettings.allowIncompleteLastPage &&
+		this.activePage === this.pagesLength - 1
+	) {
 		this._metrics.distance =
 			this.nodes.overflow.scrollWidth - this._metrics.slideWidth
 
