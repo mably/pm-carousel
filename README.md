@@ -229,11 +229,14 @@ Both methods can be called again when new carousels are injected into the DOM.
 
 ## Responsive settings
 
-Have you noticed the `reponsive` key in the above example? That's the way to make your carousel fully responsive.
+Have you noticed the `reponsive` key in the above example?
+That's the way to make your carousel fully responsive.
 
 You can use whatever unit you want for the `minWidth` setting.
 
 The `disable` setting will deactivate the carousel.
+If set to `auto`, the carousel will only be enabled 
+when the total number of items is greater than the group size.
 
 ## API
 
@@ -241,7 +244,7 @@ The instance of `pm-carousel` can be reached from nodes with `data-pm-carousel` 
 
 ### Play and Stop
 
-Only available when Play/PAuse button is present.
+Only available when Play/Pause button is present.
 
 ```JS
 const myCarousel = document.querySelector(".class-of-a-carousel");
