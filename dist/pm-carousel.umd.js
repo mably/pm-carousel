@@ -428,7 +428,7 @@
     };
     ["touchstart", "touchmove", "touchend"].forEach((event, index) => {
       const handler = [onTouchStart, onTouchMove, onTouchEnd][index];
-      this.nodes.wrapper[method](event, handler.bind(this));
+      this.nodes.wrapper[method](event, handler.bind(this), { passive: true });
     });
     this.el[method]("click", onClick.bind(this));
     this.el[method]("keydown", onKeydown.bind(this));
