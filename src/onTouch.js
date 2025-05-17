@@ -1,5 +1,3 @@
-import { SLIDE_MIN_RATIO, TRANSITION } from "./constants"
-
 const timeouts = {
 	onTouchStart: null,
 	onTouchMove: null,
@@ -59,9 +57,11 @@ export function onTouchEnd() {
 		}
 
 		const goToNext =
-			this._metrics.moveX > this._metrics.slideWidth / SLIDE_MIN_RATIO
+			this._metrics.moveX >
+			this._metrics.slideWidth / this.currentSettings.slideMinRatio
 		const goToPrev =
-			this._metrics.moveX < -this._metrics.slideWidth / SLIDE_MIN_RATIO
+			this._metrics.moveX <
+			-this._metrics.slideWidth / this.currentSettings.slideMinRatio
 
 		document.documentElement.style.removeProperty("overflow")
 
@@ -75,7 +75,7 @@ export function onTouchEnd() {
 
 		if (!goToNext && !goToPrev) {
 			// reset to initial position
-			this.nodes.overflow.style.transition = TRANSITION
+			this.nodes.overflow.style.transition = this.currentSettings.transition
 			this.nodes.overflow.style.transform = `translateX(${-this._metrics
 				.distance}px)`
 			return

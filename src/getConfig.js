@@ -1,4 +1,9 @@
-import { ATTR } from "./constants"
+import {
+	ATTR,
+	TRANSITION,
+	TRANSITION_SWIPE,
+	SLIDE_MIN_RATIO,
+} from "./constants"
 import { extend } from "./utils/extend"
 import { toJson } from "./utils/toJson"
 
@@ -10,6 +15,9 @@ const DEFAULT = {
 		noStartSpace: false,
 		autoplay: 0,
 		fullScroll: false,
+		transition: TRANSITION,
+		transitionSwipe: TRANSITION_SWIPE,
+		slideMinRatio: SLIDE_MIN_RATIO,
 	},
 }
 

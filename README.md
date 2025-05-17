@@ -133,6 +133,9 @@ Default settings:
   noStartSpace: false, // in combinaison with "spaceAround" option, but align left the carousel
   autoplay: 0,         // speed of the autoplay (0 for disabled)
   fullScroll: false,   // Enables full scroll on the last slide to display only the remaining items
+  transition: "transform .5s ease-in-out",   // CSS transition applied when navigating via buttons
+  transitionSwipe: "transform .2s ease-out", // CSS transition applied when navigating via swipe gestures
+  slideMinRatio: 6,    // The swipe must cover at least 1/6 of the slide’s width to trigger a slide change
 }
 ```
 

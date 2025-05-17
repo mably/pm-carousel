@@ -1,4 +1,4 @@
-import { ATTR, TRANSITION, ACTIVECLASS } from "./constants"
+import { ATTR, ACTIVECLASS } from "./constants"
 
 const buildActions = {
 	playstop: function () {
@@ -27,7 +27,7 @@ const buildActions = {
 		}
 
 		// overflow container transition
-		this.nodes.overflow.style.transition = TRANSITION
+		this.nodes.overflow.style.transition = this.currentSettings.transition
 		this.nodes.overflow.style.display = "flex"
 
 		// wrapper overflow
