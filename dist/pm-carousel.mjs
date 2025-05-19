@@ -7,7 +7,7 @@ const ATTRPREV = `${ATTR}-prev`;
 const ATTRNEXT = `${ATTR}-next`;
 const ATTRPLAYSTOP = `${ATTR}-playstop`;
 const TRANSITION = "transform .5s ease-in-out";
-const TRANSITION_SWIPE = "transform .1s ease-out";
+const TRANSITION_SWIPE = "transform .2s ease-out";
 const ACTIVECLASS = "is-active";
 const SLIDE_MIN_RATIO = 6;
 const buildActions = {
@@ -24,7 +24,7 @@ const buildActions = {
       this.nodes.overflow.style.paddingRight = startSpace + "%";
       this.nodes.overflow.style.paddingLeft = startSpace + "%";
     }
-    this.nodes.overflow.style.transition = TRANSITION;
+    this.nodes.overflow.style.transition = this.currentSettings.transition;
     this.nodes.overflow.style.display = "flex";
     this.nodes.wrapper.style.overflow = "hidden";
     this.el.classList.add(ACTIVECLASS);
@@ -225,7 +225,10 @@ const DEFAULT = {
     spaceAround: 0,
     noStartSpace: false,
     autoplay: 0,
-    fullScroll: false
+    fullScroll: false,
+    transition: TRANSITION,
+    transitionSwipe: TRANSITION_SWIPE,
+    slideMinRatio: SLIDE_MIN_RATIO
   }
 };
 function getConfig(settings = {}) {
@@ -396,15 +399,15 @@ function onTouchEnd() {
     if (!this._metrics.isSwiping) {
       return;
     }
-    const goToNext = this._metrics.moveX > this._metrics.slideWidth / SLIDE_MIN_RATIO;
-    const goToPrev = this._metrics.moveX < -this._metrics.slideWidth / SLIDE_MIN_RATIO;
+    const goToNext = this._metrics.moveX > this._metrics.slideWidth / this.currentSettings.slideMinRatio;
+    const goToPrev = this._metrics.moveX < -this._metrics.slideWidth / this.currentSettings.slideMinRatio;
     document.documentElement.style.removeProperty("overflow");
     let newActive = this.activePage;
     this._metrics.moveX = 0;
     this._metrics.isScrolling = false;
     this._metrics.isSwiping = false;
     if (!goToNext && !goToPrev) {
-      this.nodes.overflow.style.transition = TRANSITION;
+      this.nodes.overflow.style.transition = this.currentSettings.transition;
       this.nodes.overflow.style.transform = `translateX(${-this._metrics.distance}px)`;
       return;
     }
@@ -507,11 +510,7 @@ class Plugin {
     if (this.activePage > this.pagesLength - 1) {
       this.activePage = this.currentSettings.loop && !isSwipe ? 0 : this.pagesLength - 1;
     }
-    if (isSwipe) {
-      this.nodes.overflow.style.transition = TRANSITION_SWIPE;
-    } else {
-      this.nodes.overflow.style.transition = TRANSITION;
-    }
+    this.nodes.overflow.style.transition = isSwipe ? this.currentSettings.transitionSwipe : this.currentSettings.transition;
     setActive.call(this);
   }
   reinit() {
